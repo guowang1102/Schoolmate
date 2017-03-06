@@ -6,12 +6,28 @@
     android:background="#fff"
     >
 
-    <com.weiguowang.schoolmate.RoundSpinView
-        android:id="@+id/rsv_test"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        app:menuStart="@mipmap/menu1"
-        android:layout_marginRight="-260dp"/>
+        android:layout_height="match_parent">
+
+        <com.weiguowang.schoolmate.RoundSpinView
+            android:id="@+id/rsv_test"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:menuStart="@mipmap/menu1"
+            android:layout_marginRight="-260dp"/>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="中心圆内容"
+            android:layout_marginLeft="300dp"
+            android:layout_marginTop="200dp"/>
+
+    </FrameLayout>
+
+
 
 </LinearLayout>
