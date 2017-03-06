@@ -12,6 +12,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         app:menuStart="@mipmap/menu1"
-        android:layout_marginRight="-300dp"/>
+        android:layout_marginRight="-260dp"/>
 
 </LinearLayout>

@@ -64,7 +64,6 @@ public class RoundSpinView extends View {
                     velocity /= 1.0666F;
                     new Thread(new FlingRunnable(velocity)).start();
                     break;
-
                 default:
                     break;
             }
@@ -344,6 +343,10 @@ public class RoundSpinView extends View {
     public void onDraw(Canvas canvas) {
         //画一个白色的圆环
         canvas.drawCircle(mPointX, mPointY, mRadius, mPaint);
+
+        canvas.drawCircle(mPointX, mPointY, mRadius*4/5, mPaint);
+
+        canvas.drawCircle(mPointX, mPointY, mRadius*3/5*4/5, mPaint);
 
         //将每个菜单画出来
         for (int index = 0; index < STONE_COUNT; index++) {
