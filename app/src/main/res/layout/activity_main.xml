@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#fff"
     >
 
     <com.weiguowang.schoolmate.RoundSpinView
@@ -10,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="@mipmap/ic_launcher"
-        app:menuStart="@mipmap/ic_launcher" />
+        app:menuStart="@mipmap/menu1"
+        android:layout_marginRight="-300dp"/>
 
 </LinearLayout>

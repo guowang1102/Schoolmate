@@ -6,13 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -25,7 +24,6 @@ import android.view.View;
  * Copyright (c) 2017 All Rights Reserved.
  */
 
-
 public class RoundSpinView extends View {
     private Paint mPaint = new Paint();
     private PaintFlagsDrawFilter pfd;
@@ -35,7 +33,7 @@ public class RoundSpinView extends View {
     // stone列表
     private BigStone[] mStones;
     // 数目
-    private static final int STONE_COUNT = 3;
+    private static final int STONE_COUNT = 10;
 
     // 圆心坐标
     private int mPointX = 0, mPointY = 0;
@@ -74,7 +72,7 @@ public class RoundSpinView extends View {
     };
 
     public interface onRoundSpinViewListener{
-        public void onSingleTapUp(int position);  //监听每个菜单的单击事件
+         void onSingleTapUp(int position);  //监听每个菜单的单击事件
     }
 
     public RoundSpinView(Context context, AttributeSet attrs) {
@@ -85,18 +83,22 @@ public class RoundSpinView extends View {
             startMenu = a.getResourceId(R.styleable.RoundSpinView_menuStart, 0);
         }
         pfd = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-        mPaint.setColor(Color.WHITE);
+//        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(Color.RED);
+        mPaint.setColor(Color.rgb(255, 20, 147));
         mPaint.setStrokeWidth(2);
         mPaint.setAntiAlias(true); //消除锯齿
         mPaint.setStyle(Paint.Style.STROKE); //绘制空心圆
-        PathEffect effects = new DashPathEffect(new float[]{5,5,5,5},1);
-        mPaint.setPathEffect(effects);
+//        PathEffect effects = new DashPathEffect(new float[]{5,5,5,5},1);
+//        mPaint.setPathEffect(effects);
 
 
         quadrantTouched = new boolean[] { false, false, false, false, false };
         mGestureDetector = new GestureDetector(getContext(),new MyGestureListener());
 
         setupStones();
+
+        setPadding(0, 0, 0, 0);
     }
 
     @Override
@@ -107,8 +109,11 @@ public class RoundSpinView extends View {
         mPointY = this.getMeasuredHeight()/2;
 
         //初始化半径和菜单半径
-        mRadius = mPointX-mPointX/5;
-        menuRadius = (int)(mPointX/5.5);
+//        mRadius = mPointX-mPointX/5;
+//        menuRadius = (int)(mPointX/5.5);
+
+        mRadius = mPointY-mPointY/5;
+        menuRadius = (int)(mPointX/10);
 
         computeCoordinates();
     }
@@ -346,8 +351,13 @@ public class RoundSpinView extends View {
                 continue;
             drawInCenter(canvas, mStones[index].bitmap, mStones[index].x,
                     mStones[index].y);
+
+
+
         }
     }
+
+     TextPaint mTextPaint = new TextPaint();
 
     /**
      * 把中心点放到中心处
@@ -366,6 +376,12 @@ public class RoundSpinView extends View {
         dst.bottom = (int) (top + menuRadius);
         canvas.setDrawFilter(pfd);
         canvas.drawBitmap(bitmap, null, dst, mPaint);
+
+        //TODO 新增绘制文本
+        mTextPaint.setTextSize(28);
+        mTextPaint.setColor(Color.BLACK);
+        mTextPaint.clearShadowLayer();
+        canvas.drawText("12km", left-190, top, mTextPaint);
     }
 
     private int getInCircle(int x, int y) {
@@ -389,6 +405,9 @@ public class RoundSpinView extends View {
 
         // 图片
         Bitmap bitmap;
+
+        // 图片
+        String title;
 
         // 角度
         int angle;
