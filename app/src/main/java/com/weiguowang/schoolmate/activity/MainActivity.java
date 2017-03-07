@@ -6,8 +6,12 @@ import android.widget.Toast;
 
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
+import com.weiguowang.schoolmate.entity.Person;
 import com.weiguowang.schoolmate.utils.Toasty;
 import com.weiguowang.schoolmate.view.CircleMenuLayout;
+
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
 
 public class MainActivity extends TActivity {
 
@@ -35,6 +39,20 @@ public class MainActivity extends TActivity {
             @Override
             public void itemCenterClick(View view) {
                 toastyInfo("Click Center");
+            }
+        });
+
+        Person p2 = new Person();
+        p2.setName("weiguowang");
+        p2.setAddress("广东广州");
+        p2.save(new SaveListener<String>() {
+            @Override
+            public void done(String objectId,BmobException e) {
+                if(e==null){
+                    toastyInfo("添加数据成功，返回objectId为："+objectId);
+                }else{
+                    toastyInfo("创建数据失败：" + e.getMessage());
+                }
             }
         });
     }
