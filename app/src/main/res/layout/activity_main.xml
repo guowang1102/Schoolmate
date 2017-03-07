@@ -1,37 +1,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
-    android:orientation="vertical">
+    android:background="#FFF"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="215px"
         android:layout_height="match_parent">
 
-        <com.weiguowang.schoolmate.RoundSpinView
-            android:id="@+id/rsv_test"
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="1086px"
+        android:layout_height="match_parent"
+        android:layout_marginRight="-543px">
+
+        <com.weiguowang.schoolmate.view.CircleMenuLayout
+            android:id="@+id/id_menulayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginRight="-260dp"
-            app:menuStart="@mipmap/menu1" />
+            android:background="#FFF">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
+            <RelativeLayout
+                android:id="@id/id_circle_menu_item_center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="中心圆内容"
-                android:layout_marginLeft="200dp"/>
+                android:layout_height="wrap_content">
 
-        </RelativeLayout>
+                <ImageView
+                    android:layout_width="270px"
+                    android:layout_height="270px"
+                    android:layout_centerInParent="true"
+                    android:background="@mipmap/turnplate_center_unlogin" />
 
-
+                <ImageView
+                    android:layout_width="275px"
+                    android:layout_height="275px"
+                    android:layout_centerInParent="true"
+                    android:background="@mipmap/turnplate_mask_unlogin_normal" />
+            </RelativeLayout>
+        </com.weiguowang.schoolmate.view.CircleMenuLayout>
     </FrameLayout>
-
 
 </LinearLayout>
