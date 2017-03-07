@@ -1,5 +1,6 @@
 package com.weiguowang.schoolmate;
 
+import com.weiguowang.schoolmate.utils.Toasty;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 /**
@@ -9,6 +10,8 @@ import com.zhy.autolayout.AutoLayoutActivity;
  */
 public abstract class TActivity extends AutoLayoutActivity {
 
-
+    protected void toastyInfo(String msg){
+        Toasty.info(this,msg).show();
+    }
 
 }
