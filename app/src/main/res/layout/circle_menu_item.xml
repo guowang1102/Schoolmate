@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:textColor="#4C4C4C"
             android:text="保险"
-            android:textSize="14px" />
+            android:textSize="18px" />
     </LinearLayout>
 
 
