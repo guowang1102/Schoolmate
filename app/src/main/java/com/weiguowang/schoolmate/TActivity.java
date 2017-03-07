@@ -10,8 +10,14 @@ import com.zhy.autolayout.AutoLayoutActivity;
  */
 public abstract class TActivity extends AutoLayoutActivity {
 
+    /**
+     * toasty message
+     * @param msg
+     */
     protected void toastyInfo(String msg){
         Toasty.info(this,msg).show();
     }
+
+
 
 }

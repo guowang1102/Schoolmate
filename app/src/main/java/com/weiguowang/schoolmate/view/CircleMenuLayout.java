@@ -20,18 +20,16 @@ import com.zhy.autolayout.AutoLayoutInfo;
 import com.zhy.autolayout.utils.AutoLayoutHelper;
 
 public class CircleMenuLayout extends ViewGroup {
-    /**
-     * 半径
-     */
+
     private int mRadius;
     /**
      * 该容器内child item的默认尺寸
      */
-    private static final float RADIO_DEFAULT_CHILD_DIMENSION = 1 / 4f;
+    private static final float RADIO_DEFAULT_CHILD_DIMENSION = 1 / 8f;
     /**
      * 菜单的中心child的默认尺寸
      */
-    private float RADIO_DEFAULT_CENTERITEM_DIMENSION = 1 / 3f;
+    private float RADIO_DEFAULT_CENTERITEM_DIMENSION = 9/20f;
     /**
      * 该容器的内边距,无视padding属性，如需边距请用该变量
      */
@@ -131,14 +129,26 @@ public class CircleMenuLayout extends ViewGroup {
             resHeight = getSuggestedMinimumHeight();
             // 如果未设置背景图片，则设置为屏幕宽高的默认值
             resHeight = resHeight == 0 ? getDefaultWidth() : resHeight;
+
+            Log.d("--","resHeight :"+resHeight);
+
         } else {
             // 如果都设置为精确值，则直接取小值；
-            resWidth = resHeight = Math.min(width, height);
+//            resWidth = resHeight = Math.min(width, height);
+            resWidth = Math.max(width, height); //TODO 修改为最高为高度
+            resHeight = Math.max(width, height); //TODO 修改为最高为高度
+            Log.d("--","resHeight :"+resHeight);
+            Log.d("--","resWidth :"+resWidth);
         }
+
+
 
         setMeasuredDimension(resWidth, resHeight);
         // 获得半径
-        mRadius = Math.max(getMeasuredWidth(), getMeasuredHeight());
+//        mRadius = Math.max(getMeasuredWidth(), getMeasuredHeight());
+        mRadius = getMeasuredHeight(); //TODO 修改为最高为高度
+
+        Log.d("--","mRadius :"+mRadius);
 
         // menu item数量
         final int count = getChildCount();
@@ -166,16 +176,16 @@ public class CircleMenuLayout extends ViewGroup {
                 makeMeasureSpec = MeasureSpec.makeMeasureSpec(childSize,
                         childMode);
             }
+
             child.measure(makeMeasureSpec, makeMeasureSpec);
         }
 
         mPadding = RADIO_PADDING_LAYOUT * mRadius;
     }
 
-    // 半径
+    // 红圈半径
     private int mRadius2 = 0;
-
-    // 圆心坐标
+    // 红圈 圆心坐标
     private int mPointX = 0, mPointY = 0;
 
     /**
@@ -210,11 +220,8 @@ public class CircleMenuLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-
         mPointX = b / 2;
         mPointY = mPointX;
-
-
 
         int layoutRadius = mRadius;
 
@@ -243,6 +250,8 @@ public class CircleMenuLayout extends ViewGroup {
 
             // 计算，中心点到menu item中心的距离
             float tmp = layoutRadius / 2f - cWidth / 2 - mPadding;
+
+            Log.d("--","中心点到menu item中心的距离 is "+tmp);
 
             mRadius2 = (int) tmp;
 
@@ -540,24 +549,38 @@ public class CircleMenuLayout extends ViewGroup {
 
     private Paint mPaint = new Paint();
 
+    private Paint mPaint2 = new Paint();
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPaint.setColor(Color.RED);
+
         mPaint.setColor(Color.rgb(247, 50, 99));
         mPaint.setStrokeWidth(2);
         mPaint.setAntiAlias(true); //消除锯齿
         mPaint.setStyle(Paint.Style.STROKE); //绘制空心圆
         canvas.drawCircle(mPointX, mPointY, mRadius2, mPaint);
 
+        mPaint2.setColor(Color.rgb(192, 192, 192));
+        mPaint2.setStrokeWidth(2);
+        mPaint2.setAntiAlias(true); //消除锯齿
+        mPaint2.setStyle(Paint.Style.STROKE); //绘制空心圆
+        canvas.drawCircle(mPointX, mPointY, mRadius2*4/5, mPaint2);
+
     }
 
 
     private final AutoLayoutHelper mHelper = new AutoLayoutHelper(this);
 
+//    @Override
+//    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+//        return new LayoutParams(p);
+//    }
+
+
     @Override
-    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        return new LayoutParams(p);
+    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(),attrs);
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams

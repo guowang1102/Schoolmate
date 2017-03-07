@@ -13,9 +13,9 @@
 
         <ImageView
             android:id="@id/id_circle_menu_item_image"
-            android:layout_width="wrap_content"
+            android:layout_width="100px"
             android:visibility="gone"
-            android:layout_height="wrap_content" />
+            android:layout_height="100px" />
 
         <TextView
             android:id="@id/id_circle_menu_item_text"

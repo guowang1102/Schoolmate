@@ -15,10 +15,10 @@ public class MainActivity extends TActivity {
 
     private String[] mItemTexts = new String[]{"安全中心 ", "特色服务", "投资理财",
             "转账汇款", "我的账户", "信用卡", "安全中心 ", "特色服务", "投资理财",
-            "转账汇款", "我的账户", "信用卡"};
+            "转账汇款", "我的账户", "信用卡","安全中心 ", "特色服务", "投资理财",};
     private int[] mItemImgs = new int[]{R.mipmap.menu1, R.mipmap.menu1,
             R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1,
-            R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1};
+            R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1,R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
