@@ -24,6 +24,9 @@ android {
     sourceSets {
         main.jniLibs.srcDirs = ['libs']
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
