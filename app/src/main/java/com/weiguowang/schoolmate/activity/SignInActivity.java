@@ -74,8 +74,8 @@ public class SignInActivity extends TActivity {
             Bundle b = data.getExtras();
             String username = b.getString("username");
             String password = b.getString("password");
-            userEt.setText(username);
-            pwdEt.setText(password);
+            userEt.setText(b.getString("username"));
+            pwdEt.setText(b.getString("password"));
 
         }
     }

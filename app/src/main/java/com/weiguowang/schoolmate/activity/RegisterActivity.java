@@ -72,6 +72,7 @@ public class RegisterActivity extends TActivity {
             public void done(MyUser myUser, BmobException e) {
                 if (e == null) {
                     Toasty.success(RegisterActivity.this, "注册成功").show();
+                    //TODO 注册成功后补充个人资料
                     mHandler.sendEmptyMessageDelayed(WHAT_SUCCESS, 1000);
                 } else {
                     Toasty.error(RegisterActivity.this, "注册失败:" + e.getMessage()).show();

@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
-import com.weiguowang.schoolmate.entity.MyUser;
 import com.weiguowang.schoolmate.view.CircleMenuLayout;
 
 public class MainActivity extends TActivity {
@@ -13,10 +12,10 @@ public class MainActivity extends TActivity {
     private CircleMenuLayout mCircleMenuLayout;
 
     private String[] mItemTexts = new String[]{"安全中心 ", "特色服务", "投资理财","转账汇款", "我的账户", "信用卡", "安全中心 ", "特色服务", "投资理财",
-            "转账汇款", "我的账户", "信用卡","安全中心 ", "特色服务", "投资理财"};
-    private int[] mItemImgs = new int[]{R.mipmap.menu1, R.mipmap.menu1,
+            "转账汇款", "我的账户", "信用卡","15KM ", "特色服务", "投资理财"};
+    private int[] mItemImgs = new int[]{R.mipmap.ic_launcher, R.mipmap.menu1,
             R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1,
-            R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1,R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1};
+            R.mipmap.menu1, R.mipmap.menu1, R.mipmap.ic_launcher, R.mipmap.menu1,R.mipmap.ic_launcher, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

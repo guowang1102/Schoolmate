@@ -135,12 +135,8 @@ public class CircleMenuLayout extends ViewGroup {
         } else {
             // 如果都设置为精确值，则直接取小值；
 //            resWidth = resHeight = Math.min(width, height);
-            resWidth = Math.max(width, height); //TODO 修改为最高为高度
-            resHeight = Math.max(width, height); //TODO 修改为最高为高度
-            Log.d("--","resHeight :"+resHeight);
-            Log.d("--","resWidth :"+resWidth);
+            resWidth = resHeight = Math.max(width, height);  //TODO 修改 最高为高度
         }
-
 
 
         setMeasuredDimension(resWidth, resHeight);

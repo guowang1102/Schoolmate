@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 设置旋转菜单对应的第一张图片 -->
-    <declare-styleable name="RoundSpinView">
-        <attr name="menuStart" format="reference" />
+
+    <!-- 圆形图片自定义属性 -->
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+        <attr name="border_overlay" format="boolean" />
     </declare-styleable>
+
 </resources>
