@@ -31,6 +31,7 @@ import com.weiguowang.schoolmate.R;
  */
 
 final class ToastyUtils {
+
     private ToastyUtils() {
     }
 

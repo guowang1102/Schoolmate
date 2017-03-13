@@ -9,6 +9,15 @@
         android:layout_width="215px"
         android:layout_height="match_parent">
 
+
+        <com.weiguowang.schoolmate.view.CircleImageView
+            android:id="@+id/myinfo_img"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_marginTop="30px"
+            android:layout_marginLeft="20px"
+            android:src="@mipmap/ic_launcher" />
+
     </LinearLayout>
 
 
@@ -42,5 +51,7 @@
             </RelativeLayout>
         </com.weiguowang.schoolmate.view.CircleMenuLayout>
     </FrameLayout>
+
+
 
 </LinearLayout>

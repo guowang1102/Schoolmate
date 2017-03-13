@@ -12,6 +12,7 @@ public class MyUser extends BmobUser {
     private Boolean sex;
     private String nick;
     private Integer age;
+    private School school;
 
     public boolean getSex() {
         return this.sex;
@@ -36,5 +37,20 @@ public class MyUser extends BmobUser {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public void setSex(Boolean sex) {
+        this.sex = sex;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
+
+
+
 }
 
