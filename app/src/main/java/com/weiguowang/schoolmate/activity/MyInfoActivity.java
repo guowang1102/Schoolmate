@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.weiguowang.schoolmate.R;
@@ -13,12 +14,13 @@ import com.weiguowang.schoolmate.TActivity;
 
 /**
  * function: 我的信息
- * Created by 韦国旺 on 2017/3/9 0009.
+ * Created by 韦国旺 on 2017/3/9.
  * Copyright (c) 2017  All Rights Reserved.
  */
-public class MyInfoActivity extends TActivity {
+public class MyInfoActivity extends TActivity implements View.OnClickListener {
 
     private TextView modifyTv;
+    private Button logoutBtn;
 
     public static final int CODE_BACK_MODIFY = 501;
 
@@ -27,6 +29,7 @@ public class MyInfoActivity extends TActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myinfo);
         initView();
+        initEvent();
 
     }
 
@@ -37,13 +40,12 @@ public class MyInfoActivity extends TActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         modifyTv = (TextView) findViewById(R.id.modify_tv);
-        modifyTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MyInfoActivity.this, ModifyInfoActivity.class);
-                startActivityForResult(intent, CODE_BACK_MODIFY);
-            }
-        });
+        logoutBtn = (Button) findViewById(R.id.logout);
+    }
+
+    private void initEvent() {
+        logoutBtn.setOnClickListener(this);
+        modifyTv.setOnClickListener(this);
     }
 
     @Override
@@ -61,6 +63,19 @@ public class MyInfoActivity extends TActivity {
         if (resultCode == RESULT_OK && requestCode == CODE_BACK_MODIFY) {
             //TODO 刷新数据
 
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.logout: //退出登录
+                //
+                break;
+            case R.id.modify_tv:  //修改
+                Intent intent = new Intent(MyInfoActivity.this, ModifyInfoActivity.class);
+                startActivityForResult(intent, CODE_BACK_MODIFY);
+                break;
         }
     }
 }

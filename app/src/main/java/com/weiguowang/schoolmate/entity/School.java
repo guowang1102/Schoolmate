@@ -25,7 +25,7 @@ public class School extends BmobObject {
     private String major;
 
     /**
-     * 届
+     * 届 (班级)
      */
     private String session;
 

@@ -1,73 +1,193 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/body_bg"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:background="@color/body_bg">
+
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:id="@+id/modify_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="30px"
+            android:text="修改"
+            android:textColor="@color/white" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <com.weiguowang.schoolmate.view.CircleImageView
+        android:id="@+id/head_img"
+        android:layout_width="300px"
+        android:layout_height="300px"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="30px"
+        android:src="@mipmap/ic_launcher" />
+
 
     <LinearLayout
-        android:id="@+id/register_info_layout"
+        android:id="@+id/myinfo_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="50px"
-        android:layout_marginRight="50px"
+        android:layout_below="@id/head_img"
+        android:layout_margin="10px"
+        android:layout_marginTop="20px"
+        android:background="@color/colorAccent"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/email"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="10px"
-            android:hint="email"
-            android:inputType="textEmailAddress"/>
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/password"
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="昵称:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="爵爷" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="10px"
-            android:hint="password"
-            android:inputType="textPassword"/>
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="真名:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="韦国旺" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="性别:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="男" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="职业:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="Android工程师" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="手机:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="18681529205" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="学校:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="广西建设职业技术学院" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="院系:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="计算机系" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="专业:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="计算机网络技术" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/my_info_list_key"
+                android:text="班级:" />
+
+            <TextView
+                style="@style/my_info_list_value"
+                android:text="网络1102" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/register_btn"
-        android:layout_width="300px"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/register_info_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30px"
-        android:background="#f10606"
-        android:text="注册"
-        android:onClick="onClick"
-        android:textColor="@color/white" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/register_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100px"
-        android:paddingBottom="40px">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="已有账号，" />
-
-        <TextView
-            android:layout_marginLeft="10px"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="立即登录"
-            android:id="@+id/signin_now"
-            android:onClick="onClick"
-            android:textColor="@android:color/holo_red_light" />
-    </LinearLayout>
-
-
-</RelativeLayout>
+</ScrollView>

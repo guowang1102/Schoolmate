@@ -20,6 +20,10 @@ public abstract class TActivity extends AutoLayoutActivity {
         Toasty.info(this,msg).show();
     }
 
+    protected View findView(int resId){
+        return (View)findViewById(resId);
+    }
+
 
 
 

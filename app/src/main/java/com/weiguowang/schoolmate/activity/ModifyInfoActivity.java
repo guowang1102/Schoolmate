@@ -17,5 +17,12 @@ public class ModifyInfoActivity extends TActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_myinfo);
+        initView();
     }
+
+    private void initView() {
+
+    }
+
+
 }
