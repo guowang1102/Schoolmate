@@ -10,24 +10,21 @@ import cn.bmob.v3.BmobUser;
 public class MyUser extends BmobUser {
 
     private Boolean sex;
-    private String nick;
     private Integer age;
-    private School school;
+    private String nickName;
+    private String realName;
+    private String job;
+    private String schoolName;
+    private String college;
+    private String major;
+    private String session;
 
-    public boolean getSex() {
-        return this.sex;
+    public Boolean getSex() {
+        return sex;
     }
 
-    public void setSex(boolean sex) {
+    public void setSex(Boolean sex) {
         this.sex = sex;
-    }
-
-    public String getNick() {
-        return this.nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
     }
 
     public Integer getAge() {
@@ -38,19 +35,62 @@ public class MyUser extends BmobUser {
         this.age = age;
     }
 
-    public void setSex(Boolean sex) {
-        this.sex = sex;
+    public String getNickName() {
+        return nickName;
     }
 
-    public School getSchool() {
-        return school;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
     }
 
 
 
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
 }
 

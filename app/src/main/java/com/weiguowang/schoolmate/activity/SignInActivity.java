@@ -31,6 +31,12 @@ public class SignInActivity extends TActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         initView();
+        testData();
+    }
+
+    private void testData(){
+        userEt.setText("user");
+        pwdEt.setText("1234");
     }
 
     private void initView() {
@@ -51,7 +57,9 @@ public class SignInActivity extends TActivity {
     }
 
     private void signIn() {
-        BmobUser.loginByAccount(userEt.getText().toString().trim(), pwdEt.getText().toString().trim(), new LogInListener<MyUser>() {
+        String username = userEt.getText().toString().trim();
+        String password = pwdEt.getText().toString().trim();
+        BmobUser.loginByAccount(username, password, new LogInListener<MyUser>() {
 
             @Override
             public void done(MyUser user, BmobException e) {

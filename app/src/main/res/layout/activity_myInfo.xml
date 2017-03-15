@@ -1,39 +1,213 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/body_bg"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="?attr/colorPrimary"
-        android:layout_alignParentTop="true">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="?attr/colorPrimary">
+
+            <TextView
+                android:id="@+id/modify_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="30px"
+                android:text="修改"
+                android:textColor="@color/white" />
+
+        </android.support.v7.widget.Toolbar>
+
+
+        <com.weiguowang.schoolmate.view.CircleImageView
+            android:id="@+id/head_img"
+            android:layout_width="300px"
+            android:layout_height="300px"
+            android:layout_below="@+id/toolbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30px"
+            android:src="@mipmap/ic_launcher" />
+
+
+        <LinearLayout
+            android:id="@+id/myinfo_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/head_img"
+            android:layout_margin="10px"
+            android:layout_marginTop="20px"
+            android:background="@color/colorAccent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="昵称:" />
+
+                <TextView
+                    android:id="@+id/nick_name"
+                    style="@style/my_info_list_value" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="真名:" />
+
+                <TextView
+                    android:id="@+id/real_name"
+                    style="@style/my_info_list_value" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="性别:" />
+
+                <TextView
+                    android:id="@+id/sex"
+                    style="@style/my_info_list_value" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="职业:" />
+
+                <TextView
+                    android:id="@+id/job"
+                    style="@style/my_info_list_value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="手机:" />
+
+                <TextView
+                    android:id="@+id/mobile_phone"
+                    style="@style/my_info_list_value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="学校:" />
+
+                <TextView
+                    android:id="@+id/school_name"
+                    style="@style/my_info_list_value" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="院系:" />
+
+                <TextView
+                    android:id="@+id/college"
+                    style="@style/my_info_list_value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="专业:" />
+
+                <TextView
+                    android:id="@+id/major"
+                    style="@style/my_info_list_value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/my_info_list_key"
+                    android:text="班级:" />
+
+                <TextView
+                    android:id="@+id/session"
+                    style="@style/my_info_list_value" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/myinfo_list"
+            android:layout_marginLeft="40px"
+            android:layout_marginRight="40px"
+            android:layout_marginTop="40px"
+            android:background="@color/colorAccent"
+            android:paddingBottom="30px"
+            android:paddingTop="30px"
+            android:text="退出登录"
             android:textColor="@color/white"
-            android:layout_marginRight="30px"
-            android:layout_gravity="right"
-            android:id="@+id/modify_tv"
-            android:text="修改"
-            />
+            android:textSize="30px" />
 
-    </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
 
-
-    <com.weiguowang.schoolmate.view.CircleImageView
-        android:id="@+id/head_img"
-        android:layout_width="300px"
-        android:layout_height="300px"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true"
-
-        android:layout_marginTop="30px"
-        android:src="@mipmap/ic_launcher" />
-
-</RelativeLayout>
+</ScrollView>

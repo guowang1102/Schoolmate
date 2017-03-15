@@ -5,5 +5,8 @@
     <!--我的信息-->
     <string name="logout">退出登录</string>
     <string name="my_info">我的信息</string>
+    <string name="modify_info">修改信息</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
 
 </resources>

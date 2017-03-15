@@ -11,17 +11,20 @@ import com.weiguowang.schoolmate.view.CircleImageView;
 import com.weiguowang.schoolmate.view.CircleMenuLayout;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 
 public class MainActivity extends TActivity {
 
     private CircleMenuLayout mCircleMenuLayout;
-    private String[] mItemTexts = new String[]{"安全中心 ", "特色服务", "投资理财","转账汇款", "我的账户", "信用卡", "安全中心 ", "特色服务", "投资理财",
-            "转账汇款", "我的账户", "信用卡","15KM ", "特色服务", "投资理财"};
+    private String[] mItemTexts = new String[]{"安全中心 ", "特色服务", "投资理财", "转账汇款", "我的账户", "信用卡", "安全中心 ", "特色服务", "投资理财",
+            "转账汇款", "我的账户", "信用卡", "15KM ", "特色服务", "投资理财"};
     private int[] mItemImgs = new int[]{R.mipmap.ic_launcher, R.mipmap.menu1,
             R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1,
-            R.mipmap.menu1, R.mipmap.menu1, R.mipmap.ic_launcher, R.mipmap.menu1,R.mipmap.ic_launcher, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1};
+            R.mipmap.menu1, R.mipmap.menu1, R.mipmap.ic_launcher, R.mipmap.menu1, R.mipmap.ic_launcher, R.mipmap.menu1, R.mipmap.menu1, R.mipmap.menu1};
 
     private CircleImageView myInfoImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,19 +32,40 @@ public class MainActivity extends TActivity {
         initView();
         setEvent();
         initData();
+//        testData();
     }
+
+    private MyUser userInfo;
 
     private void initData() {
-        MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
-        if(userInfo.getSchool()!=null){
-            if("".equals(userInfo.getSchool().getSchoolName())){
-                //TODO 识别个人信息是否完整，不完整的就弹出
-            }
+        userInfo = BmobUser.getCurrentUser(MyUser.class);
+        if ("".equals(userInfo.getSchoolName())) {
+            //TODO 识别个人信息是否完整，不完整的就弹出
+            toastyInfo("个人信息不完整");
         }
-
-
     }
 
+    private void testData() {
+        MyUser myUser = new MyUser();
+        myUser.setNickName("爵爷");
+        myUser.setRealName("韦国旺");
+        myUser.setSex(false);
+        myUser.setJob("Android工程师");
+        myUser.setSchoolName("广西建设职业技术学院");
+        myUser.setCollege("计算机系");
+        myUser.setMajor("计算机网络技术");
+        myUser.setSession("网络1102");
+        myUser.update(userInfo.getObjectId(), new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    toastyInfo("更新用户信息成功");
+                } else {
+                    toastyInfo("更新用户信息失败:" + e.getMessage());
+                }
+            }
+        });
+    }
 
     private void initView() {
         mCircleMenuLayout = (CircleMenuLayout) findViewById(R.id.id_menulayout);
@@ -53,7 +77,7 @@ public class MainActivity extends TActivity {
         mCircleMenuLayout.setOnMenuItemClickListener(new CircleMenuLayout.OnMenuItemClickListener() {
             @Override
             public void itemClick(View view, int pos) {
-                toastyInfo("Click "+mItemTexts[pos]);
+                toastyInfo("Click " + mItemTexts[pos]);
             }
 
             @Override
@@ -64,7 +88,7 @@ public class MainActivity extends TActivity {
         myInfoImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,MyInfoActivity.class));
+                startActivity(new Intent(MainActivity.this, MyInfoActivity.class));
             }
         });
     }

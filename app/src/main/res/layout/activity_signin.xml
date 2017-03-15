@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/ic_launcher"
             android:drawablePadding="10px"
-            android:hint="password" />
+            android:hint="password"
+            android:inputType="textPassword"/>
 
     </LinearLayout>
 

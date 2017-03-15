@@ -25,7 +25,6 @@ public class RegisterActivity extends TActivity {
 
     private EditText emailEt, pwdEt;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
