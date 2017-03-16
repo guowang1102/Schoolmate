@@ -71,4 +71,11 @@ public class School extends BmobObject {
                 ", session='" + session + '\'' +
                 '}';
     }
+
+    public void clear(){
+        schoolName = "";
+        college = "";
+        major = "";
+        session = "";
+    }
 }
