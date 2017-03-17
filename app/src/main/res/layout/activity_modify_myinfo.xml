@@ -138,7 +138,7 @@
                     style="@style/my_info_list_key"
                     android:text="学校:" />
 
-                <TextView
+                <EditText
                     android:id="@+id/school_name"
                     style="@style/my_info_list_value" />
 
@@ -147,7 +147,7 @@
                     android:layout_width="wrap_content"
                     android:onClick="onClick"
                     android:layout_height="wrap_content"
-                    android:text="修改"
+                    android:text="选择"
                     android:layout_marginRight="40px"/>
 
 
@@ -166,6 +166,13 @@
                 <EditText
                     android:id="@+id/college"
                     style="@style/my_info_list_value" />
+                <Button
+                    android:id="@+id/modify_college"
+                    android:layout_width="wrap_content"
+                    android:onClick="onClick"
+                    android:layout_height="wrap_content"
+                    android:text="选择"
+                    android:layout_marginRight="40px"/>
 
             </LinearLayout>
 
@@ -182,6 +189,14 @@
                     android:id="@+id/major"
                     style="@style/my_info_list_value" />
 
+                <Button
+                    android:id="@+id/modify_major"
+                    android:layout_width="wrap_content"
+                    android:onClick="onClick"
+                    android:layout_height="wrap_content"
+                    android:text="选择"
+                    android:layout_marginRight="40px"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -196,6 +211,14 @@
                 <EditText
                     android:id="@+id/session"
                     style="@style/my_info_list_value" />
+
+                <Button
+                    android:id="@+id/modify_session"
+                    android:layout_width="wrap_content"
+                    android:onClick="onClick"
+                    android:layout_height="wrap_content"
+                    android:text="选择"
+                    android:layout_marginRight="40px"/>
 
             </LinearLayout>
 
