@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.weiguowang.schoolmate.R;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * function:
@@ -33,6 +35,7 @@ public class MenuItemAdapter extends BaseAdapter {
     private float textSize;
     private OnClickListener onClickListener;
     private OnItemClickListener mOnItemClickListener;
+    private Set<String> dataSet=new LinkedHashSet<>();
 
     public MenuItemAdapter(Context context, List<String> listData, int sId, int nId) {
         mContext = context;

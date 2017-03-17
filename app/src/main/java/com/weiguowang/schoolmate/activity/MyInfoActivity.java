@@ -113,7 +113,7 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.modify_tv:  //修改
-                Intent intent = new Intent(MyInfoActivity.this, ModifyInfoActivity.class);
+                Intent intent = new Intent(MyInfoActivity.this, UpdateInfoActivity.class);
                 startActivityForResult(intent, CODE_BACK_MODIFY);
                 break;
         }

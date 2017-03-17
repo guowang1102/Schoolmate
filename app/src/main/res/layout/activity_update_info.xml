@@ -37,6 +37,7 @@
             android:layout_below="@+id/toolbar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30px"
+            android:onClick="onClick"
             android:src="@mipmap/ic_launcher" />
 
 
