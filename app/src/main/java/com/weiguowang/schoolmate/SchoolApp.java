@@ -22,5 +22,6 @@ public class SchoolApp extends Application {
     private void init() {
         AutoLayoutConifg.getInstance().useDeviceSize();
         Bmob.initialize(this, "cc81cd3258bb6826a6fe11aa00821a06");
+        //TODO somethings
     }
 }
