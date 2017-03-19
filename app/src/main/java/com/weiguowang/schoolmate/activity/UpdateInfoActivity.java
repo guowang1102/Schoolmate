@@ -1,19 +1,16 @@
 package com.weiguowang.schoolmate.activity;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,23 +19,26 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.entity.MyUser;
 import com.weiguowang.schoolmate.entity.School;
+import com.weiguowang.schoolmate.utils.ImageUtils;
+import com.weiguowang.schoolmate.utils.Logger;
+import com.weiguowang.schoolmate.utils.SystemUtils;
+import com.weiguowang.schoolmate.view.CircleImageView;
 import com.weiguowang.schoolmate.view.ListPopupWindow;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import cn.bmob.push.lib.util.LogUtil;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -54,7 +54,9 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
 
     private EditText nickNameEt, realNameEt, sexEt, jobEt, mobilePhoneEt, schoolNameeEt, collegeEt, majorEt, sessionEt;
     private MyUser userInfo;
-    private ArrayList<String> schoolNameList = new ArrayList<>();
+    private CircleImageView headImageView;
+    private int mHeight;
+    private int mWidth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,11 +82,82 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         collegeEt = (EditText) findViewById(R.id.college);
         majorEt = (EditText) findViewById(R.id.major);
         sessionEt = (EditText) findViewById(R.id.session);
+
+        headImageView = (CircleImageView)findViewById(R.id.head_img);
+
+        headImageView.post(new Runnable() {
+            @Override
+            public void run() {
+                mWidth = headImageView.getWidth();
+                mHeight = headImageView.getHeight();
+            }
+        });
     }
 
     private void initData() {
         userInfo = BmobUser.getCurrentUser(MyUser.class);
         setUserInfo(userInfo);
+        checkSDPermission();
+    }
+
+    private static final String Camera_permission = Manifest.permission.CAMERA;
+    private static final String SD_permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final int request_sd=99;
+    public static final int request_camera2 = 101;
+    private File mFile;
+    public static final int INTENT_CODE_IMAGE_CAPTURE2 = 11;
+
+    private void checkSDPermission() {
+        if (ContextCompat.checkSelfPermission(this, SD_permission)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, SD_permission)) {
+                toastyInfo("您已禁止该权限，需要重新开启。");
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{SD_permission},request_sd);
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,@NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case request_sd:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    toastyInfo("Permission Denied");
+                }
+                break;
+            case request_camera2:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startCameraWithHighBitmap();
+                } else {
+                    toastyInfo("Permission Denied");
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case INTENT_CODE_IMAGE_CAPTURE2:
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(),mWidth, mHeight);
+                    headImageView.setImageBitmap(bitmap);
+                }
+                break;
+            case INTENT_CODE_IMAGE_GALLERY1:
+                if (SystemUtils.isMIUI()) {
+                    Log.d("info","isminui");
+                    setPhotoForMiuiSystem(data);
+                } else {
+                    setPhotoForNormalSystem(data);
+                    Log.d("info","no miui");
+                }
+                break;
+        }
     }
 
     private void initEvent() {
@@ -168,6 +241,9 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
     }
 
+    private final String IMAGE_TYPE = "image/*";
+    public static final int INTENT_CODE_IMAGE_GALLERY1 = 10;
+
     private void updateHeadImg() {
         final Set<String> menuSet = new LinkedHashSet<>();
         menuSet.add("拍照");
@@ -178,12 +254,12 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             public void getValue(String value, int position) {
                 switch (position) {
                     case 0:
-//                        dispatchTakePictureIntent();
-                        takePhone(null);
+                        getHighPictureFromCamera(Camera_permission);
                         break;
                     case 1:
-//                        openLocalAlbum();
-                        choosePhone(null);
+                        Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
+                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                        startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
                         break;
                     case 2:
                         break;
@@ -192,235 +268,97 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }, findViewById(R.id.head_img));
     }
 
-
-    private static final int REQUEST_TAKE_PHOTO = 11111;
-    private static final int START_ALBUM_CODE = 11112;
-
-    private File output;
-    private Uri imageUri;
-    private static final int CROP_PHOTO = 2;
-    private static final int REQUEST_CODE_PICK_IMAGE = 3;
-    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 6;
-    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE2 = 7;
-
-
-    public void takePhone(View view) {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_CALL_PHONE2);
-
-        } else {
-            takePhoto();
-        }
-
-    }
-
-    public void choosePhone(View view) {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_CALL_PHONE2);
-
-        } else {
-            choosePhoto();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                takePhoto();
+    /**
+     * 向onActivityResult发出请求，的到拍摄生成的图片
+     */
+    private void getHighPictureFromCamera(String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission)
+                != PackageManager.PERMISSION_GRANTED) {//还没有授予权限
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                toastyInfo("您已禁止该权限，需要重新开启。");
             } else {
-                // Permission Denied
-//                Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
-                toastyInfo("Permission Denied");
+                ActivityCompat.requestPermissions(this, new String[]{permission},request_camera2);
             }
+        }else{// 已经授予权限
+            startCameraWithHighBitmap();
         }
-
-
-        if (requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE2) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                choosePhoto();
-            } else {
-                // Permission Denied
-
-                toastyInfo("Permission Denied");
-//                Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * 拍照
-     */
-    void takePhoto() {
-        /**
-         * 最后一个参数是文件夹的名称，可以随便起
-         */
-        File file = new File(Environment.getExternalStorageDirectory(), "拍照");
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        /**
-         * 这里将时间作为不同照片的名称
-         */
-        output = new File(file, System.currentTimeMillis() + ".jpg");
-
-        /**
-         * 如果该文件夹已经存在，则删除它，否则创建一个
-         */
-        try {
-            if (output.exists()) {
-                output.delete();
-            }
-            output.createNewFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        /**
-         * 隐式打开拍照的Activity，并且传入CROP_PHOTO常量作为拍照结束后回调的标志
-         */
-        imageUri = Uri.fromFile(output);
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(intent, CROP_PHOTO);
-
-    }
-
-    /**
-     * 从相册选取图片
-     */
-    void choosePhoto() {
-        /**
-         * 打开选择图片的界面
-         */
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");//相片类型
-        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
-
     }
 
 
-    /**
-     * 启动相机拍照
-     */
-    private void dispatchTakePictureIntent() {
-        Context context = UpdateInfoActivity.this;
-        PackageManager packageManager = context.getPackageManager();
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA) == false) {
-            toastyInfo("This device does not have a camera.");
+    private void startCameraWithHighBitmap() {
+        //确定存储拍照得到的图片文件路径
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            mFile = new File(Environment.getExternalStorageDirectory(),
+                    getName());
+        } else {
+            toastyInfo("请插入sd卡");
             return;
         }
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        TActivity activity = (TActivity) UpdateInfoActivity.this;
-        if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                toastyInfo("There was a problem saving the photo...");
-            }
-            if (photoFile != null) {
-                Uri fileUri = Uri.fromFile(photoFile);
-                activity.setCapturedImageURI(fileUri);
-                activity.setCurrentPhotoPath(fileUri.getPath());
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        activity.getCapturedImageURI());
-                activity.startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+        try {
+            mFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
-
-    /**
-     * Try to return the absolute file path from the given Uri
-     *
-     * @param context
-     * @param uri
-     * @return the file path or null
-     */
-    public static String getRealFilePath(final Context context, final Uri uri) {
-        if (null == uri) return null;
-        final String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null)
-            data = uri.getPath();
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return data;
-    }
-
-    /**
-     * Creates the image file to which the image must be saved.
-     *
-     * @return
-     * @throws IOException
-     */
-    protected File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        TActivity activity = (TActivity) UpdateInfoActivity.this;
-        activity.setCurrentPhotoPath("file:" + image.getAbsolutePath());
-        return image;
-    }
-
-    /**
-     * Add the picture to the photo gallery.
-     * Must be called on all camera images or they will
-     * disappear once taken.
-     */
-    protected void addPhotoToGallery() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        TActivity activity = (TActivity) UpdateInfoActivity.this;
-        File f = new File(activity.getCurrentPhotoPath());
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-    }
-
-    /**
-     * 打开系统相册
-     */
-    private void openLocalAlbum() {
         Intent intent = new Intent();
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        //根据版本号不同使用不同的Action
-        if (Build.VERSION.SDK_INT < 19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-        }
-        startActivityForResult(intent, START_ALBUM_CODE);
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        //加载Uri型的文件路径
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
+        //向onActivityResult发送intent，requestCode为INTENT_CODE_IMAGE_CAPTURE2
+        startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);
     }
 
+    /**
+     * 解析Intent.getdata()得到的uri为String型的filePath
+     *
+     * @param contentUri
+     * @return
+     */
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Audio.Media.DATA};
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    /**
+     * MIUI系统的相册选择
+     *
+     * @param data
+     */
+    private void setPhotoForMiuiSystem(Intent data) {
+        Uri localUri = data.getData();
+        String scheme = localUri.getScheme();
+        String imagePath = "";
+        if ("content".equals(scheme)) {
+            String[] filePathColumns = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(localUri, filePathColumns, null, null, null);
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(filePathColumns[0]);
+            imagePath = c.getString(columnIndex);
+            c.close();
+        } else if ("file".equals(scheme)) {//小米4选择云相册中的图片是根据此方法获得路径
+            imagePath = localUri.getPath();
+        }
+        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(imagePath, mWidth, mHeight);
+        headImageView.setImageBitmap(bitmap);
+    }
+    private void setPhotoForNormalSystem(Intent data) {
+        Log.d(TAG, "setPhotoForNormalSystem: data uri is "+data.getData());
+//        String filePath = getRealPathFromURI(data.getData());
+//        Log.d("info", "setPhotoForNormalSystem:filePath is "+filePath);
+        String filePath = ImageUtils.getPhotoPathFromContentUri(this,data.getData());
+        Log.d("info", "setPhotoForNormalSystem:filePath is "+filePath);
+        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(filePath, mWidth, mHeight);
+        headImageView.setImageBitmap(bitmap);
+    }
+
+    private static final String TAG = "info";
+
+    @NonNull
+    private String getName() {
+        return System.currentTimeMillis() + ".jpg";
+    }
 
     public void getSchoolNameList() {
         BmobQuery<School> query = new BmobQuery<>();
@@ -540,111 +478,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         popupWindow.setSelectListener(listener);
         popupWindow.showAsDropDown(AsDropDownView, 5, 5);
 
-    }
-
-    public interface QueryListener {
-        /**
-         * @param obj
-         * @param e
-         */
-        void done(Object obj, BmobException e);
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK) {
-//            switch (requestCode) {
-//                case REQUEST_TAKE_PHOTO:
-//                    addPhotoToGallery();
-//                    TActivity activity = (TActivity) UpdateInfoActivity.this;
-//                    String imgPath = activity.getCurrentPhotoPath(); //保存图片的路径
-//                    Log.v("info", " REQUEST_TAKE_PHOTO imagepath is  " + imgPath);
-//                    setFullImageFromFilePath(imgPath, (ImageView) findViewById(R.id.head_img));
-//                    break;
-//                case START_ALBUM_CODE:  //通用取相片能正常返回
-//                    Log.v("info", "uri is:" + data.getData().getPath());
-//                    Log.v("info", "real path is:" + getRealFilePath(UpdateInfoActivity.this, data.getData()));
-//                    setFullImageFromFilePath(getRealFilePath(UpdateInfoActivity.this, data.getData()), (ImageView) findViewById(R.id.head_img));
-//                    break;
-//                default:
-//                    break;
-//            }
-//        } else {
-//            toastyInfo("Image Capture Failed");
-//        }
-
-        switch (requestCode) {
-            /**
-             * 拍照的请求标志
-             */
-            case CROP_PHOTO:
-                if (resultCode==RESULT_OK) {
-                    try {
-                        /**
-                         * 该uri就是照片文件夹对应的uri
-                         */
-                        Bitmap bit = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-//                        imageView.setImageBitmap(bit);
-                        ((ImageView)findViewById(R.id.head_img)).setImageBitmap(bit);
-                    } catch (Exception e) {
-//
-//                        Toast.makeText(this,"程序崩溃",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    Log.i("tag", "失败");
-                }
-
-                break;
-            /**
-             * 从相册中选取图片的请求标志
-             */
-
-            case REQUEST_CODE_PICK_IMAGE:
-                if (resultCode == RESULT_OK) {
-                    try {
-                        /**
-                         * 该uri是上一个Activity返回的
-                         */
-                        Uri uri = data.getData();
-                        Bitmap bit = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-//                        imageView.setImageBitmap(bit);
-                        ((ImageView)findViewById(R.id.head_img)).setImageBitmap(bit);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.d("tag",e.getMessage());
-//                        Toast.makeText(this,"程序崩溃",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    Log.i("liang", "失败");
-                }
-
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    public void setFullImageFromFilePath(String imagePath, ImageView imageView) {
-        int targetW = imageView.getWidth();  // Get the dimensions of the View
-        int targetH = imageView.getHeight();
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();  // Get the dimensions of the bitmap
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-        // Determine how much to scale down the image
-//        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-        int scaleFactor = 2;
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        imageView.setImageBitmap(bitmap);
     }
 
 
