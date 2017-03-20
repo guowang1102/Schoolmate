@@ -10,9 +10,10 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.widget.ImageView;
 
 /**
- * function :
+ * function : 图片工具类
  * Created by 韦国旺 on 2017/3/19.
  * Copyright (c) 2017 All Rights Reserved.
  */
@@ -37,6 +38,7 @@ public class ImageUtils {
 //        return createScaleBitmap(src, reqWidth, reqHeight, options.inSampleSize);
         return src;
     }
+
 
     /**
      * @param options   参数

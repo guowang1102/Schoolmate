@@ -1,6 +1,7 @@
 package com.weiguowang.schoolmate.entity;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * function:
@@ -92,5 +93,21 @@ public class MyUser extends BmobUser {
     public void setSession(String session) {
         this.session = session;
     }
+
+    /**
+     * 用户头像
+     */
+    private String headUrl;
+
+    public String getHeadUrl() {
+        return headUrl;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
+
+
+
 }
 

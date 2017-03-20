@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,19 +38,16 @@ import java.util.Set;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
-import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * function: 修改信息
  * Created by 韦国旺 on 2017/3/9.
  * Copyright (c) 2017 All Rights Reserved.
  */
-public class UpdateInfoActivity extends TActivity implements View.OnClickListener {
+public class UpdateInfoActivity3 extends TActivity implements View.OnClickListener {
 
     private EditText nickNameEt, realNameEt, sexEt, jobEt, mobilePhoneEt, schoolNameeEt, collegeEt, majorEt, sessionEt;
     private MyUser userInfo;
@@ -144,29 +139,14 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if(data==null){
-//            return;
-//        }
+        if(data==null){
+            return;
+        }
         switch (requestCode) {
             case INTENT_CODE_IMAGE_CAPTURE2:
                 if (resultCode == RESULT_OK) {
                     Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(), mWidth, mHeight);
                     headImageView.setImageBitmap(bitmap);
-                    final BmobFile bmobFile = new BmobFile(mFile);
-                    bmobFile.uploadblock(new UploadFileListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if(e==null){
-                                //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                                toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
-                                userInfo.setHeadUrl(bmobFile.getFileUrl());
-                                Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
-
-                            }else{
-                                toastyInfo("上传文件失败：" + e.getMessage());
-                            }
-                        }
-                    });
                 }
                 break;
             case INTENT_CODE_IMAGE_GALLERY1:
@@ -198,30 +178,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         collegeEt.setText(myUser.getCollege());
         majorEt.setText(myUser.getMajor());
         sessionEt.setText(myUser.getSession());
-        if (!TextUtils.isEmpty(myUser.getHeadUrl())) {
-            toastyInfo("userInfo is not null");
-            BmobFile bmobfile =new BmobFile("abc.png","",userInfo.getHeadUrl());
-            final File saveFile = new File(Environment.getExternalStorageDirectory(), bmobfile.getFilename());
-            bmobfile.download(saveFile, new DownloadFileListener() {
-                @Override
-                public void done(String s, BmobException e) {
-                    if(e==null){
-                        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(saveFile.getAbsolutePath(), mWidth, mHeight);
-                        headImageView.setImageBitmap(bitmap);
-//                        toast("下载成功,保存路径:"+savePath);
-                    }else{
-//                        toast("下载失败："+e.getErrorCode()+","+e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onProgress(Integer integer, long l) {
-
-                }
-            });
-        }else {
-            toastyInfo("userInfo is null");
-        }
     }
 
     @Override
@@ -247,7 +203,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         myUser.setCollege(collegeEt.getText().toString());
         myUser.setMajor(majorEt.getText().toString());
         myUser.setSession(sessionEt.getText().toString());
-        myUser.setHeadUrl(userInfo.getHeadUrl());
         myUser.update(userInfo.getObjectId(), new UpdateListener() {
             @Override
             public void done(BmobException e) {
@@ -306,10 +261,9 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                         getHighPictureFromCamera(Camera_permission);
                         break;
                     case 1:
-//                        Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
-//                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_TYPE);
-//                        startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
-                        openLocalAlbum();
+                        Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
+                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_TYPE);
+                        startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
                         break;
                     case 2:
                         break;
@@ -339,22 +293,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
 //                }
 //            }
 //        }, findViewById(R.id.head_img));
-    }
-
-    /**
-     * 打开系统相册
-     */
-    private void openLocalAlbum() {
-        Intent intent = new Intent();
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType(IMAGE_TYPE);
-        //根据版本号不同使用不同的Action
-        if (Build.VERSION.SDK_INT <19) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-        }else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-        }
-        startActivityForResult(intent, INTENT_CODE_IMAGE_GALLERY1);
     }
 
 
@@ -432,21 +370,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
         Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(imagePath, mWidth, mHeight);
         headImageView.setImageBitmap(bitmap);
-
-        final BmobFile bmobFile = new BmobFile(new File(imagePath));
-        bmobFile.uploadblock(new UploadFileListener() {
-            @Override
-            public void done(BmobException e) {
-                if(e==null){
-                    //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                    toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
-                    userInfo.setHeadUrl(bmobFile.getFileUrl());
-                    Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
-                }else{
-                    toastyInfo("上传文件失败：" + e.getMessage());
-                }
-            }
-        });
     }
 
     private void setPhotoForNormalSystem(Intent data) {
@@ -457,22 +380,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         Log.d("info", "setPhotoForNormalSystem:filePath is " + filePath);
         Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(filePath, mWidth, mHeight);
         Log.d(TAG, "bitmap width and height is"+bitmap.getWidth()+"|"+bitmap.getHeight());
-
-
-        final BmobFile bmobFile = new BmobFile(new File(filePath));
-        bmobFile.uploadblock(new UploadFileListener() {
-            @Override
-            public void done(BmobException e) {
-                if(e==null){
-                    //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                    toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
-                    userInfo.setHeadUrl(bmobFile.getFileUrl());
-                    Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
-                }else{
-                    toastyInfo("上传文件失败：" + e.getMessage());
-                }
-            }
-        });
         headImageView.setImageBitmap(bitmap);
     }
 
