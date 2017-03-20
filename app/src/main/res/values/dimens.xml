@@ -5,4 +5,9 @@
 
 
     <dimen name="expand_tab_item_height">45dp</dimen>
+
+    <!--recyclerview maragin-->
+    <dimen name="divider">1px</dimen>
+    <dimen name="topmargin">0px</dimen>
+    <dimen name="bottommargin">0px</dimen>
 </resources>

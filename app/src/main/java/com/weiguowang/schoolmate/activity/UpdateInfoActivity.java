@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,14 +18,13 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
+import com.weiguowang.schoolmate.adapter.SelectCallback;
 import com.weiguowang.schoolmate.entity.MyUser;
 import com.weiguowang.schoolmate.entity.School;
 import com.weiguowang.schoolmate.utils.ImageUtils;
-import com.weiguowang.schoolmate.utils.Logger;
 import com.weiguowang.schoolmate.utils.SystemUtils;
 import com.weiguowang.schoolmate.view.CircleImageView;
 import com.weiguowang.schoolmate.view.ListPopupWindow;
@@ -38,7 +36,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.bmob.push.lib.util.LogUtil;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -83,7 +80,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         majorEt = (EditText) findViewById(R.id.major);
         sessionEt = (EditText) findViewById(R.id.session);
 
-        headImageView = (CircleImageView)findViewById(R.id.head_img);
+        headImageView = (CircleImageView) findViewById(R.id.head_img);
 
         headImageView.post(new Runnable() {
             @Override
@@ -102,7 +99,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
 
     private static final String Camera_permission = Manifest.permission.CAMERA;
     private static final String SD_permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    public static final int request_sd=99;
+    public static final int request_sd = 99;
     public static final int request_camera2 = 101;
     private File mFile;
     public static final int INTENT_CODE_IMAGE_CAPTURE2 = 11;
@@ -113,12 +110,13 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, SD_permission)) {
                 toastyInfo("您已禁止该权限，需要重新开启。");
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{SD_permission},request_sd);
+                ActivityCompat.requestPermissions(this, new String[]{SD_permission}, request_sd);
             }
         }
     }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,@NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case request_sd:
@@ -144,17 +142,17 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         switch (requestCode) {
             case INTENT_CODE_IMAGE_CAPTURE2:
                 if (resultCode == RESULT_OK) {
-                    Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(),mWidth, mHeight);
+                    Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(), mWidth, mHeight);
                     headImageView.setImageBitmap(bitmap);
                 }
                 break;
             case INTENT_CODE_IMAGE_GALLERY1:
                 if (SystemUtils.isMIUI()) {
-                    Log.d("info","isminui");
+                    Log.d("info", "isminui");
                     setPhotoForMiuiSystem(data);
                 } else {
                     setPhotoForNormalSystem(data);
-                    Log.d("info","no miui");
+                    Log.d("info", "no miui");
                 }
                 break;
         }
@@ -245,11 +243,14 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     public static final int INTENT_CODE_IMAGE_GALLERY1 = 10;
 
     private void updateHeadImg() {
-        final Set<String> menuSet = new LinkedHashSet<>();
-        menuSet.add("拍照");
-        menuSet.add("本地相册");
-        menuSet.add("取消");
-        chooseList(menuSet, new ListPopupWindow.OnSelectListener() {
+
+        final List<String> menuList = new ArrayList<>();
+        menuList.add("拍照");
+        menuList.add("本地相册");
+        menuList.add("取消");
+
+
+        showSelectDialogFragment("please choose", menuList, "", new SelectCallback() {
             @Override
             public void getValue(String value, int position) {
                 switch (position) {
@@ -258,15 +259,39 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                         break;
                     case 1:
                         Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
-                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_TYPE);
                         startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
                         break;
                     case 2:
                         break;
                 }
             }
-        }, findViewById(R.id.head_img));
+        });
+
+
+//        final Set<String> menuSet = new LinkedHashSet<>();
+//        menuSet.add("拍照");
+//        menuSet.add("本地相册");
+//        menuSet.add("取消");
+//        chooseList(menuSet, new ListPopupWindow.OnSelectListener() {
+//            @Override
+//            public void getValue(String value, int position) {
+//                switch (position) {
+//                    case 0:
+//                        getHighPictureFromCamera(Camera_permission);
+//                        break;
+//                    case 1:
+//                        Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
+//                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                        startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
+//                        break;
+//                    case 2:
+//                        break;
+//                }
+//            }
+//        }, findViewById(R.id.head_img));
     }
+
 
     /**
      * 向onActivityResult发出请求，的到拍摄生成的图片
@@ -277,9 +302,9 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 toastyInfo("您已禁止该权限，需要重新开启。");
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{permission},request_camera2);
+                ActivityCompat.requestPermissions(this, new String[]{permission}, request_camera2);
             }
-        }else{// 已经授予权限
+        } else {// 已经授予权限
             startCameraWithHighBitmap();
         }
     }
@@ -343,12 +368,13 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(imagePath, mWidth, mHeight);
         headImageView.setImageBitmap(bitmap);
     }
+
     private void setPhotoForNormalSystem(Intent data) {
-        Log.d(TAG, "setPhotoForNormalSystem: data uri is "+data.getData());
+        Log.d(TAG, "setPhotoForNormalSystem: data uri is " + data.getData());
 //        String filePath = getRealPathFromURI(data.getData());
 //        Log.d("info", "setPhotoForNormalSystem:filePath is "+filePath);
-        String filePath = ImageUtils.getPhotoPathFromContentUri(this,data.getData());
-        Log.d("info", "setPhotoForNormalSystem:filePath is "+filePath);
+        String filePath = ImageUtils.getPhotoPathFromContentUri(this, data.getData());
+        Log.d("info", "setPhotoForNormalSystem:filePath is " + filePath);
         Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(filePath, mWidth, mHeight);
         headImageView.setImageBitmap(bitmap);
     }

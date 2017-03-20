@@ -9,4 +9,12 @@
     <color name="no_color">#00000000</color>
     <color name="black">#000000</color>
     <color name="choose_eara_item_press_color">#f4f4f4</color>
+
+    <color name="dialog_bg">#f5f9fc</color>
+    <color name="input_body_txt_reverse">#999</color>
+    <color name="input_body_txt">#525354</color>
+    <color name="dialog_title">#252525</color>
+    <color name="line_bg">#aaa</color>
+    <color name="select_divider">#b5b5b5</color>
+
 </resources>

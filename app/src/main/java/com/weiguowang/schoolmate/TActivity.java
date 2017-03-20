@@ -1,10 +1,14 @@
 package com.weiguowang.schoolmate;
 
-import android.net.Uri;
-import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.view.View;
 
+import com.weiguowang.schoolmate.adapter.SelectCallback;
+import com.weiguowang.schoolmate.fragment.SelectFragment;
 import com.weiguowang.schoolmate.utils.Toasty;
 import com.zhy.autolayout.AutoLayoutActivity;
+
+import java.util.List;
 
 /**
  * function:
@@ -20,6 +24,31 @@ public abstract class TActivity extends AutoLayoutActivity {
      */
     protected void toastyInfo(String msg) {
         Toasty.info(this, msg).show();
+    }
+
+    /**
+     * 显示单行选择列表
+     *
+     * @param title
+     * @param strList
+     * @param tag
+     * @param callback
+     */
+    protected void showSelectDialogFragment(String title, List<String> strList, String tag, SelectCallback callback) {
+        FragmentManager fm = getSupportFragmentManager();
+        SelectFragment dialogFragment = SelectFragment.newInstance(title, strList);
+        dialogFragment.show(fm, tag);
+        dialogFragment.setCallback(callback);
+    }
+
+    /**
+     *
+     * @param resId
+     * @param <T>
+     * @return
+     */
+    protected <T extends View> T findView(int resId) {
+        return (T) (findViewById(resId));
     }
 
 }
