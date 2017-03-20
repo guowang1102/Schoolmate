@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.weiguowang.schoolmate.MessageEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.adapter.SelectCallback;
@@ -30,6 +31,8 @@ import com.weiguowang.schoolmate.utils.ImageUtils;
 import com.weiguowang.schoolmate.utils.SystemUtils;
 import com.weiguowang.schoolmate.view.CircleImageView;
 import com.weiguowang.schoolmate.view.ListPopupWindow;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -467,6 +470,8 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                     //bmobFile.getFileUrl()--返回的上传文件的完整地址
                     toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
                     userInfo.setHeadUrl(bmobFile.getFileUrl());
+
+                    EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
                     Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
                 }else{
                     toastyInfo("上传文件失败：" + e.getMessage());

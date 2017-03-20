@@ -7,12 +7,16 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.weiguowang.schoolmate.MessageEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.entity.MyUser;
 import com.weiguowang.schoolmate.utils.ImageUtils;
 import com.weiguowang.schoolmate.view.CircleImageView;
 import com.weiguowang.schoolmate.view.CircleMenuLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 
@@ -41,6 +45,15 @@ public class MainActivity extends TActivity {
         initView();
         setEvent();
         initData();
+        //绑定事件接受
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //注销事件接受
+        EventBus.getDefault().unregister(this);
     }
 
     private MyUser userInfo;
@@ -111,6 +124,11 @@ public class MainActivity extends TActivity {
                 startActivity(new Intent(MainActivity.this, MyInfoActivity.class));
             }
         });
+    }
+
+    @Subscribe
+    public void onMessageEvent(MessageEvent event){
+        toastyInfo(event.message);
     }
 
 }
