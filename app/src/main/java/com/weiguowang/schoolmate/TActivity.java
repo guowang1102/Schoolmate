@@ -11,9 +11,9 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import java.util.List;
 
 /**
- * function:
- * Created by 韦国旺 on 2017/3/7 0007.
- * Copyright (c) 2017  All Rights Reserved.
+ * function: activity基类
+ * Created by on 2017/3/7 0007.
+ * Copyright (c) 2017 All Rights Reserved.
  */
 public abstract class TActivity extends AutoLayoutActivity {
 

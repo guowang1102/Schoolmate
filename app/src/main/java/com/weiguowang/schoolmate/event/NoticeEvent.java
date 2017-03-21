@@ -1,4 +1,4 @@
-package com.weiguowang.schoolmate;
+package com.weiguowang.schoolmate.event;
 
 /**
  * function : 通知
@@ -15,4 +15,5 @@ public class NoticeEvent {
     public NoticeEvent(int what) {
         this.what = what;
     }
+
 }

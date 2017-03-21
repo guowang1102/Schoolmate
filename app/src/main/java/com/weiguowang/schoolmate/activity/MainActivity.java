@@ -7,8 +7,8 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.weiguowang.schoolmate.MessageEvent;
-import com.weiguowang.schoolmate.NoticeEvent;
+import com.weiguowang.schoolmate.event.MessageEvent;
+import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.entity.MyUser;
@@ -38,16 +38,15 @@ public class MainActivity extends TActivity {
     private CircleImageView headImg;
     private int mHeight;
     private int mWidth;
+    private MyUser userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        setEvent();
+        initEvent();
         initData();
-        //绑定事件接受
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -57,9 +56,8 @@ public class MainActivity extends TActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    private MyUser userInfo;
-
     private void initData() {
+        EventBus.getDefault().register(this);
         userInfo = BmobUser.getCurrentUser(MyUser.class);
         if ("".equals(userInfo.getSchoolName())) {
             //TODO 识别个人信息是否完整，不完整的就弹出
@@ -67,20 +65,14 @@ public class MainActivity extends TActivity {
         }
 
         if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
-            toastyInfo("userInfo is not null");
-            BmobFile bmobfile =new BmobFile("abc.png","",userInfo.getHeadUrl());
+            BmobFile bmobfile = new BmobFile("abc.png", "", userInfo.getHeadUrl());
             final File saveFile = new File(Environment.getExternalStorageDirectory(), bmobfile.getFilename());
             bmobfile.download(saveFile, new DownloadFileListener() {
                 @Override
                 public void done(String s, BmobException e) {
-                    if(e==null){
-
+                    if (e == null) {
                         Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(saveFile.getAbsolutePath(), mWidth, mHeight);
                         headImg.setImageBitmap(bitmap);
-
-//                        toast("下载成功,保存路径:"+savePath);
-                    }else{
-//                        toast("下载失败："+e.getErrorCode()+","+e.getMessage());
                     }
                 }
 
@@ -89,8 +81,6 @@ public class MainActivity extends TActivity {
 
                 }
             });
-        }else {
-            toastyInfo("userInfo is null");
         }
     }
 
@@ -107,7 +97,7 @@ public class MainActivity extends TActivity {
         });
     }
 
-    private void setEvent() {
+    private void initEvent() {
         mCircleMenuLayout.setOnMenuItemClickListener(new CircleMenuLayout.OnMenuItemClickListener() {
             @Override
             public void itemClick(View view, int pos) {
@@ -128,13 +118,10 @@ public class MainActivity extends TActivity {
     }
 
     @Subscribe
-    public void onMessageEvent(MessageEvent event){
-        toastyInfo(event.message);
-    }
-
-    @Subscribe
-    public void onNoticeEvent(NoticeEvent event){
-        toastyInfo(event.what+"");
+    public void onNoticeEvent(NoticeEvent event) {
+        if (event.what == NoticeEvent.WHAT_UPDATE_HEAD) {
+            //更新头像信息
+        }
     }
 
 }

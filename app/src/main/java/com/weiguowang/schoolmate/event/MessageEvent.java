@@ -1,4 +1,4 @@
-package com.weiguowang.schoolmate;
+package com.weiguowang.schoolmate.event;
 
 /**
  * function :
@@ -15,11 +15,4 @@ public class MessageEvent {
         this.message = message;
     }
 
-//    public final int WHAT_UPDATE_HEAD = 100;
-//
-//    public final int what;
-//
-//    public MessageEvent(int what){
-//        this.what = what;
-//    }
 }

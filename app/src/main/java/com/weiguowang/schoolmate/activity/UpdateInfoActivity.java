@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,8 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.weiguowang.schoolmate.MessageEvent;
-import com.weiguowang.schoolmate.NoticeEvent;
+import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.adapter.SelectCallback;
@@ -32,16 +30,13 @@ import com.weiguowang.schoolmate.entity.School;
 import com.weiguowang.schoolmate.utils.ImageUtils;
 import com.weiguowang.schoolmate.utils.SystemUtils;
 import com.weiguowang.schoolmate.view.CircleImageView;
-import com.weiguowang.schoolmate.view.ListPopupWindow;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -64,6 +59,14 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     private CircleImageView headImageView;
     private int mHeight;
     private int mWidth;
+    private static final String Camera_permission = Manifest.permission.CAMERA;
+    private static final String SD_permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final int request_sd = 99;
+    public static final int request_camera2 = 101;
+    private File mFile;
+    public static final int INTENT_CODE_IMAGE_CAPTURE2 = 11;
+    private final String IMAGE_TYPE = "image/*";
+    public static final int INTENT_CODE_IMAGE_GALLERY1 = 10;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,22 +78,21 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     }
 
     private void initView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findView(R.id.toolbar);
         toolbar.setTitle(getString(R.string.modify_info));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        nickNameEt = (EditText) findViewById(R.id.nick_name);
-        realNameEt = (EditText) findViewById(R.id.real_name);
-        sexEt = (EditText) findViewById(R.id.sex);
-        jobEt = (EditText) findViewById(R.id.job);
-        mobilePhoneEt = (EditText) findViewById(R.id.mobile_phone);
-        schoolNameeEt = (EditText) findViewById(R.id.school_name);
-        collegeEt = (EditText) findViewById(R.id.college);
-        majorEt = (EditText) findViewById(R.id.major);
-        sessionEt = (EditText) findViewById(R.id.session);
-
-        headImageView = (CircleImageView) findViewById(R.id.head_img);
+        nickNameEt = findView(R.id.nick_name);
+        realNameEt = findView(R.id.real_name);
+        sexEt = findView(R.id.sex);
+        jobEt = findView(R.id.job);
+        mobilePhoneEt = findView(R.id.mobile_phone);
+        schoolNameeEt = findView(R.id.school_name);
+        collegeEt = findView(R.id.college);
+        majorEt = findView(R.id.major);
+        sessionEt = findView(R.id.session);
+        headImageView = findView(R.id.head_img);
 
         headImageView.post(new Runnable() {
             @Override
@@ -107,12 +109,9 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         checkSDPermission();
     }
 
-    private static final String Camera_permission = Manifest.permission.CAMERA;
-    private static final String SD_permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    public static final int request_sd = 99;
-    public static final int request_camera2 = 101;
-    private File mFile;
-    public static final int INTENT_CODE_IMAGE_CAPTURE2 = 11;
+    private void initEvent() {
+
+    }
 
     private void checkSDPermission() {
         if (ContextCompat.checkSelfPermission(this, SD_permission)
@@ -152,28 +151,12 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         switch (requestCode) {
             case INTENT_CODE_IMAGE_CAPTURE2:
                 if (resultCode == RESULT_OK) {
-                    Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(), mWidth, mHeight);
-                    headImageView.setImageBitmap(bitmap);
-                    final BmobFile bmobFile = new BmobFile(mFile);
-                    bmobFile.uploadblock(new UploadFileListener() {
-                        @Override
-                        public void done(BmobException e) {
-                            if(e==null){
-                                //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                                toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
-                                userInfo.setHeadUrl(bmobFile.getFileUrl());
-                                Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
-
-                            }else{
-                                toastyInfo("上传文件失败：" + e.getMessage());
-                            }
-                        }
-                    });
+                    uploadHeadImg(mFile);
                 }
                 break;
             case INTENT_CODE_IMAGE_GALLERY1:
                 if (SystemUtils.isMIUI()) {
-                    Log.d("info", "isminui");
+                    Log.d("info", "is minui");
                     setPhotoForMiuiSystem(data);
                 } else {
                     setPhotoForNormalSystem(data);
@@ -183,8 +166,26 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
     }
 
-    private void initEvent() {
-
+    /**
+     * 更新头像图标并上传到服务器
+     *
+     * @param mFile
+     */
+    private void uploadHeadImg(File mFile) {
+        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(), mWidth, mHeight);
+        headImageView.setImageBitmap(bitmap);
+        final BmobFile bmobFile = new BmobFile(mFile);
+        bmobFile.uploadblock(new UploadFileListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
+                    userInfo.setHeadUrl(bmobFile.getFileUrl());
+                } else {
+                    toastyInfo("上传文件失败：" + e.getMessage());
+                }
+            }
+        });
     }
 
     /**
@@ -201,18 +202,14 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         majorEt.setText(myUser.getMajor());
         sessionEt.setText(myUser.getSession());
         if (!TextUtils.isEmpty(myUser.getHeadUrl())) {
-            toastyInfo("userInfo is not null");
-            BmobFile bmobfile =new BmobFile("abc.png","",userInfo.getHeadUrl());
+            BmobFile bmobfile = new BmobFile("abc.png", "", userInfo.getHeadUrl());
             final File saveFile = new File(Environment.getExternalStorageDirectory(), bmobfile.getFilename());
             bmobfile.download(saveFile, new DownloadFileListener() {
                 @Override
                 public void done(String s, BmobException e) {
-                    if(e==null){
+                    if (e == null) {
                         Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(saveFile.getAbsolutePath(), mWidth, mHeight);
                         headImageView.setImageBitmap(bitmap);
-//                        toast("下载成功,保存路径:"+savePath);
-                    }else{
-//                        toast("下载失败："+e.getErrorCode()+","+e.getMessage());
                     }
                 }
 
@@ -221,8 +218,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
 
                 }
             });
-        }else {
-            toastyInfo("userInfo is null");
         }
     }
 
@@ -236,7 +231,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     private void updateUserInfo() {
         MyUser myUser = new MyUser();
@@ -255,6 +249,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             public void done(BmobException e) {
                 if (e == null) {
                     toastyInfo("更新用户信息成功");
+                    EventBus.getDefault().post(new NoticeEvent(NoticeEvent.WHAT_UPDATE_HEAD));
                     setResult(RESULT_OK);
                     finish();
                 } else {
@@ -268,38 +263,35 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.save_tv:
+            case R.id.save_tv:  //保存
                 updateUserInfo();
                 break;
-            case R.id.head_img:
-                updateHeadImg();
+            case R.id.head_img: //更改头像
+                clickHeadImg();
                 break;
-            case R.id.modify_school_name:
+            case R.id.modify_school_name: //更改学校
                 getSchoolNameList();
                 break;
-            case R.id.modify_college:
+            case R.id.modify_college: //更改院系
                 getCollegeList();
                 break;
-            case R.id.modify_major:
+            case R.id.modify_major: //更改专业
                 getMajorList();
                 break;
-            case R.id.modify_session:
+            case R.id.modify_session://更改班级
                 getSessionList();
                 break;
         }
     }
 
-    private final String IMAGE_TYPE = "image/*";
-    public static final int INTENT_CODE_IMAGE_GALLERY1 = 10;
-
-    private void updateHeadImg() {
-
+    /**
+     * 更新用户头像
+     */
+    private void clickHeadImg() {
         final List<String> menuList = new ArrayList<>();
         menuList.add("拍照");
         menuList.add("本地相册");
         menuList.add("取消");
-
-
         showSelectDialogFragment("please choose", menuList, "", new SelectCallback() {
             @Override
             public void getValue(String value, int position) {
@@ -308,9 +300,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                         getHighPictureFromCamera(Camera_permission);
                         break;
                     case 1:
-//                        Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
-//                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_TYPE);
-//                        startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
                         openLocalAlbum();
                         break;
                     case 2:
@@ -318,29 +307,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                 }
             }
         });
-
-
-//        final Set<String> menuSet = new LinkedHashSet<>();
-//        menuSet.add("拍照");
-//        menuSet.add("本地相册");
-//        menuSet.add("取消");
-//        chooseList(menuSet, new ListPopupWindow.OnSelectListener() {
-//            @Override
-//            public void getValue(String value, int position) {
-//                switch (position) {
-//                    case 0:
-//                        getHighPictureFromCamera(Camera_permission);
-//                        break;
-//                    case 1:
-//                        Intent i = new Intent(Intent.ACTION_GET_CONTENT, null);
-//                        i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-//                        startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);
-//                        break;
-//                    case 2:
-//                        break;
-//                }
-//            }
-//        }, findViewById(R.id.head_img));
     }
 
     /**
@@ -350,15 +316,19 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         Intent intent = new Intent();
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType(IMAGE_TYPE);
-        //根据版本号不同使用不同的Action
-        if (Build.VERSION.SDK_INT <19) {
+        if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
-        }else {
+        } else {
             intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         }
         startActivityForResult(intent, INTENT_CODE_IMAGE_GALLERY1);
     }
 
+    /**
+     * 获取原图
+     *
+     * @param permission
+     */
     private void getHighPictureFromCamera(String permission) {
         if (ContextCompat.checkSelfPermission(this, permission)
                 != PackageManager.PERMISSION_GRANTED) {//还没有授予权限
@@ -367,14 +337,16 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{permission}, request_camera2);
             }
-        } else {// 已经授予权限
+        } else { // 已经授予权限
             startCameraWithHighBitmap();
         }
     }
 
 
+    /**
+     * 启动相机
+     */
     private void startCameraWithHighBitmap() {
-        //确定存储拍照得到的图片文件路径
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mFile = new File(Environment.getExternalStorageDirectory(),
                     getName());
@@ -389,24 +361,8 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        //加载Uri型的文件路径
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
-        //向onActivityResult发送intent，requestCode为INTENT_CODE_IMAGE_CAPTURE2
         startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);
-    }
-
-    /**
-     * 解析Intent.getdata()得到的uri为String型的filePath
-     *
-     * @param contentUri
-     * @return
-     */
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Audio.Media.DATA};
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
 
     /**
@@ -425,59 +381,21 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             int columnIndex = c.getColumnIndex(filePathColumns[0]);
             imagePath = c.getString(columnIndex);
             c.close();
-        } else if ("file".equals(scheme)) {//小米4选择云相册中的图片是根据此方法获得路径
+        } else if ("file".equals(scheme)) {  //小米4选择云相册中的图片是根据此方法获得路径
             imagePath = localUri.getPath();
         }
-        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(imagePath, mWidth, mHeight);
-        headImageView.setImageBitmap(bitmap);
-
-        final BmobFile bmobFile = new BmobFile(new File(imagePath));
-        bmobFile.uploadblock(new UploadFileListener() {
-            @Override
-            public void done(BmobException e) {
-                if(e==null){
-                    //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                    toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
-                    userInfo.setHeadUrl(bmobFile.getFileUrl());
-                    Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
-                }else{
-                    toastyInfo("上传文件失败：" + e.getMessage());
-                }
-            }
-        });
+        uploadHeadImg(new File(imagePath));
     }
 
+    /**
+     * 普通相册返回
+     *
+     * @param data
+     */
     private void setPhotoForNormalSystem(Intent data) {
-        Log.d(TAG, "setPhotoForNormalSystem: data uri is " + data.getData());
-//        String filePath = getRealPathFromURI(data.getData());
-//        Log.d("info", "setPhotoForNormalSystem:filePath is "+filePath);
         String filePath = ImageUtils.getPhotoPathFromContentUri(this, data.getData());
-        Log.d("info", "setPhotoForNormalSystem:filePath is " + filePath);
-        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(filePath, mWidth, mHeight);
-        Log.d(TAG, "bitmap width and height is"+bitmap.getWidth()+"|"+bitmap.getHeight());
-
-
-        final BmobFile bmobFile = new BmobFile(new File(filePath));
-        bmobFile.uploadblock(new UploadFileListener() {
-            @Override
-            public void done(BmobException e) {
-                if(e==null){
-                    //bmobFile.getFileUrl()--返回的上传文件的完整地址
-                    toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
-                    userInfo.setHeadUrl(bmobFile.getFileUrl());
-
-//                    EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
-                    EventBus.getDefault().post(new NoticeEvent(NoticeEvent.WHAT_UPDATE_HEAD));
-                    Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
-                }else{
-                    toastyInfo("上传文件失败：" + e.getMessage());
-                }
-            }
-        });
-        headImageView.setImageBitmap(bitmap);
+        uploadHeadImg(new File(filePath));
     }
-
-    private static final String TAG = "info";
 
     @NonNull
     private String getName() {
@@ -489,19 +407,17 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         query.order("-createdAt").findObjects(new FindListener<School>() {
             @Override
             public void done(List<School> list, BmobException e) {
-                final Set<String> schoolNameSet = new LinkedHashSet<>();
-
+                final List<String> schoolNameList = new ArrayList<>(list.size());
                 if (list.size() > 0) {
                     for (School school : list) {
-                        schoolNameSet.add(school.getSchoolName());
+                        schoolNameList.add(school.getSchoolName());
                     }
-                    chooseList(schoolNameSet, new ListPopupWindow.OnSelectListener() {
+                    showSelectDialogFragment("请选择学校", schoolNameList, "", new SelectCallback() {
                         @Override
                         public void getValue(String value, int position) {
-                            toastyInfo(value);
                             schoolNameeEt.setText(value);
                         }
-                    }, findViewById(R.id.modify_school_name));
+                    });
                 }
             }
         });
@@ -515,18 +431,17 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         query.findObjects(new FindListener<School>() {
             @Override
             public void done(List<School> schoolList, BmobException e) {
-                Set<String> collegeSet = new LinkedHashSet<>();
+                List<String> collegeList = new ArrayList<>(schoolList.size());
                 if (schoolList.size() > 0) {
                     for (School school : schoolList) {
-                        collegeSet.add(school.getCollege());
+                        collegeList.add(school.getCollege());
                     }
-                    chooseList(collegeSet, new ListPopupWindow.OnSelectListener() {
+                    showSelectDialogFragment("请选择院系", collegeList, "", new SelectCallback() {
                         @Override
                         public void getValue(String value, int position) {
-                            toastyInfo(value);
                             collegeEt.setText(value);
                         }
-                    }, findViewById(R.id.modify_college));
+                    });
                 }
 
             }
@@ -543,23 +458,25 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         query.findObjects(new FindListener<School>() {
             @Override
             public void done(List<School> schoolList, BmobException e) {
-                Set<String> majorSet = new LinkedHashSet<>();
+                List<String> majorList = new ArrayList<>();
                 if (schoolList.size() > 0) {
                     for (School school : schoolList) {
-                        majorSet.add(school.getMajor());
+                        majorList.add(school.getMajor());
                     }
-                    chooseList(majorSet, new ListPopupWindow.OnSelectListener() {
+                    showSelectDialogFragment("请选择专业", majorList, "", new SelectCallback() {
                         @Override
                         public void getValue(String value, int position) {
-                            toastyInfo(value);
                             majorEt.setText(value);
                         }
-                    }, findViewById(R.id.modify_major));
+                    });
                 }
             }
         });
     }
 
+    /**
+     * 获取班级列表
+     */
     private void getSessionList() {
         BmobQuery<School> query = new BmobQuery<>();
         final String schoolName = schoolNameeEt.getText().toString().trim();
@@ -572,37 +489,19 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         query.findObjects(new FindListener<School>() {
             @Override
             public void done(List<School> schoolList, BmobException e) {
-                final Set<String> sessionSet = new LinkedHashSet<>();
+                final List<String> sessionList = new ArrayList<>();
                 if (schoolList.size() > 0) {
                     for (School school : schoolList) {
-                        sessionSet.add(school.getSession());
+                        sessionList.add(school.getSession());
                     }
-                    chooseList(sessionSet, new ListPopupWindow.OnSelectListener() {
+                    showSelectDialogFragment("请选择班级", sessionList, "", new SelectCallback() {
                         @Override
                         public void getValue(String value, int position) {
-                            toastyInfo(value);
                             sessionEt.setText(value);
                         }
-                    }, findViewById(R.id.modify_session));
+                    });
                 }
             }
         });
     }
-
-
-    private ListPopupWindow popupWindow;
-
-    private void chooseList(Set<String> arrayList, ListPopupWindow.OnSelectListener listener, View AsDropDownView) {
-        if (popupWindow != null && popupWindow.isShowing()) {
-            popupWindow.dismiss();
-            popupWindow = null;
-        }
-        Log.d("info", "list data is" + arrayList.toString());
-        popupWindow = new ListPopupWindow(getApplicationContext(), new ArrayList<>(arrayList));
-        popupWindow.setSelectListener(listener);
-        popupWindow.showAsDropDown(AsDropDownView, 5, 5);
-
-    }
-
-
 }

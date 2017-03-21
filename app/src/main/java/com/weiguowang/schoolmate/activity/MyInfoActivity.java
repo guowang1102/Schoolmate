@@ -12,7 +12,10 @@ import android.widget.TextView;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.entity.MyUser;
+import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.view.CircleImageView;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import cn.bmob.v3.BmobUser;
 
@@ -108,7 +111,6 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.logout: //退出登录
                 BmobUser.logOut();   //清除缓存用户对象
-//                BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了
                 startActivity(new Intent(MyInfoActivity.this, SignInActivity.class));
                 finish();
                 break;
@@ -116,6 +118,13 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
                 Intent intent = new Intent(MyInfoActivity.this, UpdateInfoActivity.class);
                 startActivityForResult(intent, CODE_BACK_MODIFY);
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onNoticeEvent(NoticeEvent event) {
+        if (event.what == NoticeEvent.WHAT_UPDATE_HEAD) {
+            //更新头像信息
         }
     }
 
