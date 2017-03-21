@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.weiguowang.schoolmate.MessageEvent;
+import com.weiguowang.schoolmate.NoticeEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.entity.MyUser;
@@ -129,6 +130,11 @@ public class MainActivity extends TActivity {
     @Subscribe
     public void onMessageEvent(MessageEvent event){
         toastyInfo(event.message);
+    }
+
+    @Subscribe
+    public void onNoticeEvent(NoticeEvent event){
+        toastyInfo(event.what+"");
     }
 
 }

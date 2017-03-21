@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.weiguowang.schoolmate.MessageEvent;
+import com.weiguowang.schoolmate.NoticeEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.adapter.SelectCallback;
@@ -471,7 +473,8 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                     toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
                     userInfo.setHeadUrl(bmobFile.getFileUrl());
 
-                    EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
+//                    EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
+                    EventBus.getDefault().post(new NoticeEvent(NoticeEvent.WHAT_UPDATE_HEAD));
                     Log.d(TAG, "done: userInfo url"+userInfo.getHeadUrl());
                 }else{
                     toastyInfo("上传文件失败：" + e.getMessage());
