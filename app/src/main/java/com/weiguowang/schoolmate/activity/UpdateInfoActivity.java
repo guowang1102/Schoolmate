@@ -149,9 +149,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if(data==null){
-//            return;
-//        }
         switch (requestCode) {
             case INTENT_CODE_IMAGE_CAPTURE2:
                 if (resultCode == RESULT_OK) {
@@ -362,10 +359,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         startActivityForResult(intent, INTENT_CODE_IMAGE_GALLERY1);
     }
 
-
-    /**
-     * 向onActivityResult发出请求，的到拍摄生成的图片
-     */
     private void getHighPictureFromCamera(String permission) {
         if (ContextCompat.checkSelfPermission(this, permission)
                 != PackageManager.PERMISSION_GRANTED) {//还没有授予权限
