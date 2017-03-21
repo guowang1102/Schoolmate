@@ -32,6 +32,8 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
     private TextView nickNameTv, realNameTv, sexTv, jobTv, mobilePhoneTv, schoolNameTv, collegeTv, majorTv, sessionTv;
 
     public static final int CODE_BACK_MODIFY = 501;
+    private int mHeight;
+    private int mWidth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +62,13 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
         collegeTv = (TextView) findViewById(R.id.college);
         majorTv = (TextView) findViewById(R.id.major);
         sessionTv = (TextView) findViewById(R.id.session);
+        headImg.post(new Runnable() {
+            @Override
+            public void run() {
+                mWidth = headImg.getWidth();
+                mHeight = headImg.getHeight();
+            }
+        });
     }
 
     private void initEvent() {
@@ -69,6 +78,8 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
 
     private void initData() {
         setUserInfo(BmobUser.getCurrentUser(MyUser.class));
+        initHeadImg(headImg, mWidth, mHeight);
+
     }
 
     /**

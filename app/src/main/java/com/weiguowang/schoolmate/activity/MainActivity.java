@@ -56,6 +56,7 @@ public class MainActivity extends TActivity {
         EventBus.getDefault().unregister(this);
     }
 
+
     private void initData() {
         EventBus.getDefault().register(this);
         userInfo = BmobUser.getCurrentUser(MyUser.class);
@@ -63,25 +64,7 @@ public class MainActivity extends TActivity {
             //TODO 识别个人信息是否完整，不完整的就弹出
             toastyInfo("个人信息不完整");
         }
-
-        if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
-            BmobFile bmobfile = new BmobFile("abc.png", "", userInfo.getHeadUrl());
-            final File saveFile = new File(Environment.getExternalStorageDirectory(), bmobfile.getFilename());
-            bmobfile.download(saveFile, new DownloadFileListener() {
-                @Override
-                public void done(String s, BmobException e) {
-                    if (e == null) {
-                        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(saveFile.getAbsolutePath(), mWidth, mHeight);
-                        headImg.setImageBitmap(bitmap);
-                    }
-                }
-
-                @Override
-                public void onProgress(Integer integer, long l) {
-
-                }
-            });
-        }
+        initHeadImg(headImg, mWidth, mHeight);
     }
 
     private void initView() {

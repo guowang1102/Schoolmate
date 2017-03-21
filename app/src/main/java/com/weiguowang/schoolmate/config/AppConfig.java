@@ -15,5 +15,7 @@ public class AppConfig {
 
     public static final String LOCAL_PATH = Environment.getExternalStorageDirectory() + File.separator + "Schoolmate";
 
-    public static final String HAED_IMG_LOCAL_PATH = LOCAL_PATH + File.separator + "header.jpg";
+    public static final String HEAD_IMG_NAME = "header.jpg";
+
+    public static final String HEAD_IMG_LOCAL_PATH = LOCAL_PATH + File.separator + HEAD_IMG_NAME;
 }
