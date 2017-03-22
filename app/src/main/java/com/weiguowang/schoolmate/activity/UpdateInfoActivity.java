@@ -31,6 +31,7 @@ import com.weiguowang.schoolmate.entity.School;
 import com.weiguowang.schoolmate.utils.ImageUtils;
 import com.weiguowang.schoolmate.utils.SystemUtils;
 import com.weiguowang.schoolmate.view.CircleImageView;
+import com.weiguowang.schoolmate.view.ProgressWheelDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -222,6 +223,8 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         myUser.setSession(sessionEt.getText().toString());
 
         final BmobFile bmobFile = new BmobFile(mFile);
+
+        ProgressWheelDialog.getInstance(this).show();
         bmobFile.uploadblock(new UploadFileListener() {
             @Override
             public void done(BmobException e) {
@@ -237,8 +240,8 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                     myUser.update(userInfo.getObjectId(), new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
+                            ProgressWheelDialog.getInstance(UpdateInfoActivity.this).dismiss();
                             if (e == null) {
-
                                 Log.d(TAG, "done: myUser" + myUser.getHeadUrl());
                                 Log.d(TAG, "done: userInfo" + userInfo.getHeadUrl());
                                 toastyInfo("更新用户信息成功");
