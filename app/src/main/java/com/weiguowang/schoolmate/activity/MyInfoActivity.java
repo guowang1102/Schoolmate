@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -11,11 +12,15 @@ import android.widget.TextView;
 
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
+import com.weiguowang.schoolmate.config.AppConfig;
 import com.weiguowang.schoolmate.entity.MyUser;
 import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.view.CircleImageView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.File;
 
 import cn.bmob.v3.BmobUser;
 
@@ -44,7 +49,14 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
         initData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //注销事件接受
+        EventBus.getDefault().unregister(this);
+    }
     private void initView() {
+        EventBus.getDefault().register(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.my_info));
         setSupportActionBar(toolbar);
@@ -132,10 +144,16 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
         }
     }
 
+    private static final String TAG = "myInfoActivity";
+
     @Subscribe
     public void onNoticeEvent(NoticeEvent event) {
         if (event.what == NoticeEvent.WHAT_UPDATE_HEAD) {
             //更新头像信息
+            MyUser myUser = BmobUser.getCurrentUser(MyUser.class); //本地用户信息
+            Log.d(TAG, "done: userInfo.getLastUpdateTime() " + myUser.getLastUpdateTime());
+            Log.d(TAG, "done: myUser" + myUser.getHeadUrl());
+            downloadHeadImg(new File(AppConfig.HEAD_IMG_LOCAL_PATH),headImg,myUser,true);
         }
     }
 

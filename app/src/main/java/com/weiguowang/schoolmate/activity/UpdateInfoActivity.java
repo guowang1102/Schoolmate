@@ -68,6 +68,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     public static final int INTENT_CODE_IMAGE_CAPTURE2 = 11;
     private final String IMAGE_TYPE = "image/*";
     public static final int INTENT_CODE_IMAGE_GALLERY1 = 10;
+    private static final String TAG = "UpdateInfoActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,7 +156,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         switch (requestCode) {
             case INTENT_CODE_IMAGE_CAPTURE2:
                 if (resultCode == RESULT_OK) {
-                    uploadHeadImg(mFile);
+                    uploadHeadImg(cameraSaveFile);
                 }
                 break;
             case INTENT_CODE_IMAGE_GALLERY1:
@@ -170,15 +171,16 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
     }
 
+
     /**
-     * 更新头像图标并上传到服务器
+     * 更新头像图标
      *
-     * @param mFile
+     * @param file
      */
-    private void uploadHeadImg(File mFile) {
-        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(mFile.getAbsolutePath(), mWidth, mHeight);
+    private void uploadHeadImg(File file) {
+        Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(file.getAbsolutePath(), mWidth, mHeight);
         headImageView.setImageBitmap(bitmap);
-        ImageUtils.saveBitmap(bitmap,mFile.getAbsolutePath());
+        ImageUtils.saveBitmap(bitmap, mFile.getAbsolutePath());
     }
 
     /**
@@ -224,23 +226,33 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
             @Override
             public void done(BmobException e) {
                 if (e == null) {
+                    Log.d(TAG, "done: 上传文件成功" + bmobFile.getFileUrl());
                     toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
                     userInfo.setHeadUrl(bmobFile.getFileUrl());
-                    myUser.setHeadUrl(userInfo.getHeadUrl());
-                    myUser.setLastUpdateTime(System.currentTimeMillis());
+                    myUser.setHeadUrl(bmobFile.getFileUrl());
+                    long now = System.currentTimeMillis();
+                    Log.d(TAG, "done: myUser.getLastUpdateTime()" + myUser.getLastUpdateTime());
+                    userInfo.setLastUpdateTime(now);
+                    myUser.setLastUpdateTime(now);
                     myUser.update(userInfo.getObjectId(), new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
+
+                                Log.d(TAG, "done: myUser" + myUser.getHeadUrl());
+                                Log.d(TAG, "done: userInfo" + userInfo.getHeadUrl());
                                 toastyInfo("更新用户信息成功");
                                 EventBus.getDefault().post(new NoticeEvent(NoticeEvent.WHAT_UPDATE_HEAD));
                                 setResult(RESULT_OK);
                                 finish();
+//                                userInfo.update();
                             } else {
+                                Log.d("info", "更新用户信息失败:" + e.getMessage());
                                 toastyInfo("更新用户信息失败:" + e.getMessage());
                             }
                         }
                     });
+                    Log.d(TAG, "done: userInfo.getLastUpdateTime() " + userInfo.getLastUpdateTime());
                 } else {
                     toastyInfo("上传文件失败：" + e.getMessage());
                 }
@@ -333,25 +345,31 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         }
     }
 
+    private File cameraSaveFile = null;
 
     /**
      * 启动相机
      */
     private void startCameraWithHighBitmap() {
+//        File newFile = null;
+
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            mFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
+//            newFile = new File(AppConfig.LOCAL_PATH + File.separator + System.currentTimeMillis() + ".jpg");
+
+            cameraSaveFile = new File(AppConfig.LOCAL_PATH + File.separator + System.currentTimeMillis() + ".jpg");
+//            mFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
         } else {
             toastyInfo("请插入sd卡");
             return;
         }
         try {
-            mFile.createNewFile();
+            cameraSaveFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraSaveFile));
         startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);
     }
 

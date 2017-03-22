@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,10 +37,10 @@ public class ImageUtils {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(pathName, options);
-        if (reqWidth != 0 || reqHeight != 0) {
+        if (reqWidth != 0 && reqHeight != 0) {
             options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
         } else {
-            options.inSampleSize = 1;
+            options.inSampleSize = 2;
         }
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(pathName, options);
@@ -153,6 +154,7 @@ public class ImageUtils {
     public static void saveBitmap(Bitmap mBitmap, String savePath) {
         File f = new File(savePath);
         if (f.exists()) {
+            Log.d("info", "删除文件");
             f.delete();
         }
         if (!f.getParentFile().exists()) {

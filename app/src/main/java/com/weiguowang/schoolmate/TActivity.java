@@ -3,6 +3,7 @@ package com.weiguowang.schoolmate;
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -66,12 +67,15 @@ public abstract class TActivity extends AutoLayoutActivity {
 
     /**
      * 初始化用户头像
+     * <p>
+     * 如果是刚启动应用，查询最后更新时间是否和本地的相等，如果相等，去查找本地目录下是否有图片，如果有直接显示，如果没有就下载
+     * 不是刚启动应用，去查找本地目录下是否有图片，如果有直接显示，如果没有就下载
      *
      * @param imageView
      */
     protected void initHeadImg(final ImageView imageView, boolean isFirst) {
         final File localFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
-        final MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
+        final MyUser userInfo = BmobUser.getCurrentUser(MyUser.class); //本地用户信息
         if (isFirst) {
             final long lastHeadUpdateTime = userInfo.getLastUpdateTime();
             BmobQuery<MyUser> query = new BmobQuery<>();
@@ -93,6 +97,8 @@ public abstract class TActivity extends AutoLayoutActivity {
                                         if (e == null) {
                                             Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
                                             imageView.setImageBitmap(bitmap);
+                                            userInfo.update(); //更新本地用户数据
+                                            Log.d("TActivity", "done: userinfo lastupdatetime is " + userInfo.getLastUpdateTime());
                                         }
                                     }
 
@@ -103,64 +109,52 @@ public abstract class TActivity extends AutoLayoutActivity {
                                 });
                             }
                         } else {
-                            if (localFile.exists()) {
-                                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
-                                imageView.setImageBitmap(bitmap);
-                            } else {
-                                if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
-                                    BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", userInfo.getHeadUrl());
-                                    if (!localFile.getParentFile().exists()) {
-                                        localFile.getParentFile().mkdir();
-                                    }
-                                    bmobfile.download(localFile, new DownloadFileListener() {
-                                        @Override
-                                        public void done(String s, BmobException e) {
-                                            if (e == null) {
-                                                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
-                                                imageView.setImageBitmap(bitmap);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onProgress(Integer integer, long l) {
-
-                                        }
-                                    });
-                                }
-                            }
+                            downloadHeadImg(localFile, imageView, userInfo, false);
                         }
-
                     } else {
-
+                        toastyInfo("用户头像更新失败");
                     }
                 }
             });
-        } else {
-            if (localFile.exists()) {
-                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
-                imageView.setImageBitmap(bitmap);
-            } else {
-                if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
-                    BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", userInfo.getHeadUrl());
-                    if (!localFile.getParentFile().exists()) {
-                        localFile.getParentFile().mkdir();
-                    }
-                    bmobfile.download(localFile, new DownloadFileListener() {
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if (e == null) {
-                                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
-                                imageView.setImageBitmap(bitmap);
-                            }
-                        }
+        } else { //不是启动后第一次加载用户头像
+            downloadHeadImg(localFile, imageView, userInfo, false);
+        }
+    }
 
-                        @Override
-                        public void onProgress(Integer integer, long l) {
-
-                        }
-                    });
+    /**
+     * 下载用户头像 （如果本地路径有了就直接加载，如果没有就下载）
+     *
+     * @param localFile
+     * @param imageView
+     * @param myUser
+     */
+    protected void downloadHeadImg(final File localFile, final ImageView imageView, MyUser myUser, boolean isForce) {
+        if (isForce || !localFile.exists()) {
+            Log.d("info","进到这里");
+            if (!TextUtils.isEmpty(myUser.getHeadUrl())) {
+                BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", myUser.getHeadUrl());
+                if (!localFile.getParentFile().exists()) {
+                    localFile.getParentFile().mkdir();
                 }
+                bmobfile.download(localFile, new DownloadFileListener() {
+                    @Override
+                    public void done(String s, BmobException e) {
+                        if (e == null) {
+                            Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+                            imageView.setImageBitmap(bitmap);
+                        }
+                    }
+
+                    @Override
+                    public void onProgress(Integer integer, long l) {
+
+                    }
+                });
             }
+        } else if (localFile.exists()) {
+            Log.d("info","进到这里localFile");
+            Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+            imageView.setImageBitmap(bitmap);
         }
     }
 

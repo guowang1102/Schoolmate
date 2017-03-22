@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
+import com.weiguowang.schoolmate.config.AppConfig;
 import com.weiguowang.schoolmate.event.MessageEvent;
 import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.R;
@@ -104,6 +106,9 @@ public class MainActivity extends TActivity {
     public void onNoticeEvent(NoticeEvent event) {
         if (event.what == NoticeEvent.WHAT_UPDATE_HEAD) {
             //更新头像信息
+            MyUser myUser = BmobUser.getCurrentUser(MyUser.class); //本地用户信息
+            Log.d("MainActivity", "done: userInfo.getLastUpdateTime() " + myUser.getLastUpdateTime());
+            downloadHeadImg(new File(AppConfig.HEAD_IMG_LOCAL_PATH), headImg, myUser, true);
         }
     }
 
