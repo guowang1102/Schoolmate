@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,13 +36,14 @@ public class ImageUtils {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(pathName, options);
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        if (reqWidth != 0 || reqHeight != 0) {
+            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        } else {
+            options.inSampleSize = 1;
+        }
         options.inJustDecodeBounds = false;
-        Bitmap src = BitmapFactory.decodeFile(pathName, options);
-//        return createScaleBitmap(src, reqWidth, reqHeight, options.inSampleSize);
-        return src;
+        return BitmapFactory.decodeFile(pathName, options);
     }
-
 
     /**
      * @param options   参数

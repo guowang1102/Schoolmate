@@ -1,7 +1,6 @@
 package com.weiguowang.schoolmate.entity;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
 
 /**
  * function:
@@ -61,7 +60,6 @@ public class MyUser extends BmobUser {
     }
 
 
-
     public String getSchoolName() {
         return schoolName;
     }
@@ -99,6 +97,12 @@ public class MyUser extends BmobUser {
      */
     private String headUrl;
 
+
+    /**
+     * 头像最后更新时间
+     */
+    private Long lastUpdateTime;
+
     public String getHeadUrl() {
         return headUrl;
     }
@@ -107,7 +111,13 @@ public class MyUser extends BmobUser {
         this.headUrl = headUrl;
     }
 
+    public Long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
 
+    public void setLastUpdateTime(Long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
 
 }
 

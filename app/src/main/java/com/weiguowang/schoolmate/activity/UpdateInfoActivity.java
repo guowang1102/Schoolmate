@@ -109,7 +109,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         mFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
         setUserInfo(userInfo);
         checkSDPermission();
-        initHeadImg(headImageView, mWidth, mHeight);
+        initHeadImg(headImageView);
 
     }
 
@@ -219,7 +219,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
         myUser.setMajor(majorEt.getText().toString());
         myUser.setSession(sessionEt.getText().toString());
 
-
         final BmobFile bmobFile = new BmobFile(mFile);
         bmobFile.uploadblock(new UploadFileListener() {
             @Override
@@ -228,6 +227,7 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                     toastyInfo("上传文件成功:" + bmobFile.getFileUrl());
                     userInfo.setHeadUrl(bmobFile.getFileUrl());
                     myUser.setHeadUrl(userInfo.getHeadUrl());
+                    myUser.setLastUpdateTime(System.currentTimeMillis());
                     myUser.update(userInfo.getObjectId(), new UpdateListener() {
                         @Override
                         public void done(BmobException e) {
@@ -385,11 +385,6 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
     private void setPhotoForNormalSystem(Intent data) {
         String filePath = ImageUtils.getPhotoPathFromContentUri(this, data.getData());
         uploadHeadImg(new File(filePath));
-    }
-
-    @NonNull
-    private String getName() {
-        return System.currentTimeMillis() + ".jpg";
     }
 
     public void getSchoolNameList() {

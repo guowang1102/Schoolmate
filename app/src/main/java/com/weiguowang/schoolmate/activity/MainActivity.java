@@ -64,7 +64,7 @@ public class MainActivity extends TActivity {
             //TODO 识别个人信息是否完整，不完整的就弹出
             toastyInfo("个人信息不完整");
         }
-        initHeadImg(headImg, mWidth, mHeight);
+        initHeadImg(headImg);
     }
 
     private void initView() {

@@ -1,12 +1,8 @@
 package com.weiguowang.schoolmate;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -21,10 +17,12 @@ import com.zhy.autolayout.AutoLayoutActivity;
 import java.io.File;
 import java.util.List;
 
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * function: activity基类
@@ -70,53 +68,110 @@ public abstract class TActivity extends AutoLayoutActivity {
      * 初始化用户头像
      *
      * @param imageView
-     * @param width
-     * @param height
      */
-    protected void initHeadImg(final ImageView imageView, int width, int height) {
-        new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                final int mWidth = imageView.getWidth();
-                final int mHeight = imageView.getHeight();
-                //先去目录下寻找图片，如果找不到再下载
-                File localFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
-                if (localFile.exists()) {
-                    Log.d("info", "localFile is exists");
-                    Log.d("info", "mWidth:" + mWidth);
-                    Log.d("info", "mHeight:" + mHeight);
-                    Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), mWidth, mHeight);
-                    imageView.setImageBitmap(bitmap);
-                } else {
+    protected void initHeadImg(final ImageView imageView, boolean isFirst) {
+        final File localFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
+        final MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
+        if (isFirst) {
+            final long lastHeadUpdateTime = userInfo.getLastUpdateTime();
+            BmobQuery<MyUser> query = new BmobQuery<>();
+            query.addWhereEqualTo("username", userInfo.getUsername());
+            query.findObjects(new FindListener<MyUser>() {
+                @Override
+                public void done(List<MyUser> object, BmobException e) {
+                    if (e == null) {
+                        MyUser myUser = object.get(0);
+                        if (myUser.getLastUpdateTime() != lastHeadUpdateTime) {
+                            if (!TextUtils.isEmpty(myUser.getHeadUrl())) {
+                                BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", myUser.getHeadUrl());
+                                if (!localFile.getParentFile().exists()) {
+                                    localFile.getParentFile().mkdir();
+                                }
+                                bmobfile.download(localFile, new DownloadFileListener() {
+                                    @Override
+                                    public void done(String s, BmobException e) {
+                                        if (e == null) {
+                                            Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+                                            imageView.setImageBitmap(bitmap);
+                                        }
+                                    }
 
-                    Log.d("info", "localFile not ");
-                    MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
-                    if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
-                        BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", userInfo.getHeadUrl());
-                        final File saveFile = new File(AppConfig.HEAD_IMG_LOCAL_PATH);
-                        if (!saveFile.getParentFile().exists()) {
-                            saveFile.getParentFile().mkdir();
-                        }
-                        bmobfile.download(saveFile, new DownloadFileListener() {
-                            @Override
-                            public void done(String s, BmobException e) {
-                                if (e == null) {
-                                    Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(saveFile.getAbsolutePath(), mWidth, mHeight);
-                                    imageView.setImageBitmap(bitmap);
+                                    @Override
+                                    public void onProgress(Integer integer, long l) {
+
+                                    }
+                                });
+                            }
+                        } else {
+                            if (localFile.exists()) {
+                                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+                                imageView.setImageBitmap(bitmap);
+                            } else {
+                                if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
+                                    BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", userInfo.getHeadUrl());
+                                    if (!localFile.getParentFile().exists()) {
+                                        localFile.getParentFile().mkdir();
+                                    }
+                                    bmobfile.download(localFile, new DownloadFileListener() {
+                                        @Override
+                                        public void done(String s, BmobException e) {
+                                            if (e == null) {
+                                                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+                                                imageView.setImageBitmap(bitmap);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onProgress(Integer integer, long l) {
+
+                                        }
+                                    });
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onProgress(Integer integer, long l) {
+                    } else {
 
-                            }
-                        });
                     }
                 }
+            });
+        } else {
+            if (localFile.exists()) {
+                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+                imageView.setImageBitmap(bitmap);
+            } else {
+                if (!TextUtils.isEmpty(userInfo.getHeadUrl())) {
+                    BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", userInfo.getHeadUrl());
+                    if (!localFile.getParentFile().exists()) {
+                        localFile.getParentFile().mkdir();
+                    }
+                    bmobfile.download(localFile, new DownloadFileListener() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if (e == null) {
+                                Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        }
 
+                        @Override
+                        public void onProgress(Integer integer, long l) {
+
+                        }
+                    });
+                }
             }
-        }.sendMessageDelayed(new Message(), 3000);
+        }
+    }
+
+
+    /**
+     * 非第一次初始化头像
+     *
+     * @param imageView
+     */
+    protected void initHeadImg(final ImageView imageView) {
+        initHeadImg(imageView, false);
     }
 
 }

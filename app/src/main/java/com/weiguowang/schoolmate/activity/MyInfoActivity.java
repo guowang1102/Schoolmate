@@ -78,7 +78,7 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
 
     private void initData() {
         setUserInfo(BmobUser.getCurrentUser(MyUser.class));
-        initHeadImg(headImg, mWidth, mHeight);
+        initHeadImg(headImg);
 
     }
 
