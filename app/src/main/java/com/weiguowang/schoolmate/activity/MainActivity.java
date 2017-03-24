@@ -1,20 +1,15 @@
 package com.weiguowang.schoolmate.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.weiguowang.schoolmate.config.AppConfig;
-import com.weiguowang.schoolmate.event.MessageEvent;
-import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
+import com.weiguowang.schoolmate.config.AppConfig;
 import com.weiguowang.schoolmate.entity.MyUser;
-import com.weiguowang.schoolmate.utils.ImageUtils;
+import com.weiguowang.schoolmate.event.NoticeEvent;
 import com.weiguowang.schoolmate.view.CircleImageView;
 import com.weiguowang.schoolmate.view.CircleMenuLayout;
 
@@ -24,9 +19,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
 
 public class MainActivity extends TActivity {
 

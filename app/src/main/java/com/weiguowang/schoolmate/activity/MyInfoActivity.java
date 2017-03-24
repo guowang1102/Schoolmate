@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +51,13 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_modify, menu);
+        return true;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         //注销事件接受
@@ -62,7 +70,7 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        modifyTv = (TextView) findViewById(R.id.modify_tv);
+//        modifyTv = (TextView) findViewById(R.id.modify_tv);
         logoutBtn = (Button) findViewById(R.id.logout);
         headImg = (CircleImageView) findViewById(R.id.head_img);
         nickNameTv = (TextView) findViewById(R.id.nick_name);
@@ -85,7 +93,7 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
 
     private void initEvent() {
         logoutBtn.setOnClickListener(this);
-        modifyTv.setOnClickListener(this);
+//        modifyTv.setOnClickListener(this);
     }
 
     private void initData() {
@@ -115,6 +123,10 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.action_modify:
+                Intent intent = new Intent(MyInfoActivity.this, UpdateInfoActivity.class);
+                startActivityForResult(intent, CODE_BACK_MODIFY);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -137,10 +149,10 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
                 startActivity(new Intent(MyInfoActivity.this, SignInActivity.class));
                 finish();
                 break;
-            case R.id.modify_tv:  //修改
-                Intent intent = new Intent(MyInfoActivity.this, UpdateInfoActivity.class);
-                startActivityForResult(intent, CODE_BACK_MODIFY);
-                break;
+//            case R.id.modify_tv:  //修改
+//                Intent intent = new Intent(MyInfoActivity.this, UpdateInfoActivity.class);
+//                startActivityForResult(intent, CODE_BACK_MODIFY);
+//                break;
         }
     }
 

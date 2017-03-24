@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/ic_launcher"
             android:drawablePadding="10px"
-            android:hint="username" />
+            android:hint="username"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/password"
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/ic_launcher"
             android:drawablePadding="10px"
+            android:textColor="@color/black"
             android:hint="password"
             android:inputType="textPassword"/>
 

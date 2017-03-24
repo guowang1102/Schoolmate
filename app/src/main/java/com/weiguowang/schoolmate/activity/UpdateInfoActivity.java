@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -206,6 +207,9 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
                 setResult(RESULT_OK);
                 finish();
                 break;
+            case R.id.action_save:
+                updateUserInfo();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -267,11 +271,19 @@ public class UpdateInfoActivity extends TActivity implements View.OnClickListene
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_save, menu);
+        return true;
+    }
+
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.save_tv:  //保存
-                updateUserInfo();
-                break;
+//            case R.id.save_tv:  //保存
+//                updateUserInfo();
+//                break;
             case R.id.head_img: //更改头像
                 clickHeadImg();
                 break;

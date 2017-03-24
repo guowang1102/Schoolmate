@@ -32,6 +32,9 @@ import cn.bmob.v3.listener.FindListener;
  */
 public abstract class TActivity extends AutoLayoutActivity {
 
+
+    protected String TAG = getClass().getSimpleName();
+
     /**
      * toasty message
      *
