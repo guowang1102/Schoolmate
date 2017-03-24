@@ -39,7 +39,7 @@
                 android:layout_centerInParent="true"
                 android:src="@mipmap/ic_launcher"
                 app:border_color="@color/white"
-                app:border_width="5px" />
+                app:border_width="10px" />
 
         </RelativeLayout>
 
@@ -201,14 +201,12 @@
         <Button
             android:id="@+id/logout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/myinfo_list"
-            android:layout_marginLeft="40px"
-            android:layout_marginRight="40px"
+            android:layout_marginLeft="150px"
+            android:layout_marginRight="150px"
             android:layout_marginTop="40px"
-            android:background="@color/colorAccent"
-            android:paddingBottom="30px"
-            android:paddingTop="30px"
+            android:background="@drawable/select_btn"
             android:text="退出登录"
             android:textColor="@color/white"
             android:textSize="30px" />

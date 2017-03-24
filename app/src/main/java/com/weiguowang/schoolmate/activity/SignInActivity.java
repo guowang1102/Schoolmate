@@ -1,15 +1,26 @@
 package com.weiguowang.schoolmate.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.weiguowang.schoolmate.R;
 import com.weiguowang.schoolmate.TActivity;
 import com.weiguowang.schoolmate.entity.MyUser;
+import com.weiguowang.schoolmate.utils.StatusBarCompat;
 import com.weiguowang.schoolmate.utils.Toasty;
+import com.weiguowang.schoolmate.view.ClearableEditText;
+import com.zhy.autolayout.AutoRelativeLayout;
+
+import java.lang.reflect.Field;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -24,7 +35,7 @@ public class SignInActivity extends TActivity {
 
     public static final int CODE_BACK_REGISTER = 0;
 
-    private EditText userEt, pwdEt;
+    private ClearableEditText userEt, pwdEt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,14 +45,35 @@ public class SignInActivity extends TActivity {
         testData();
     }
 
-    private void testData(){
+
+    private void testData() {
         userEt.setText("user");
         pwdEt.setText("1234");
+        userEt.setSelection(userEt.getText().toString().length());
     }
 
     private void initView() {
-        userEt = (EditText) findViewById(R.id.username);
-        pwdEt = (EditText) findViewById(R.id.password);
+        userEt = (ClearableEditText) findViewById(R.id.username);
+        pwdEt = (ClearableEditText) findViewById(R.id.password);
+//        Drawable userIcon = getResources().getDrawable(R.mipmap.ic_launcher);
+//        Drawable userIcon = ContextCompat.getDrawable(this,R.mipmap.ic_launcher);
+//        userIcon.setBounds(0,0,100,100);
+//        userEt.setCompoundDrawables(userIcon,null,null,null);
+//        userEt.setCompoundDrawablePadding(40);
+////        userEt.setPadding(40,0,0,0);
+//        userEt.setCompoundDrawablePadding(40);
+
+//        Drawable pwdIcon = ContextCompat.getDrawable(this,R.mipmap.ic_launcher);
+//        pwdIcon.setBounds(0,0,100,100);
+//        pwdEt.setCompoundDrawables(pwdIcon,null,null,null);
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            View decorView = getWindow().getDecorView();
+//            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+//            decorView.setSystemUiVisibility(option);
+//            getWindow().setStatusBarColor(Color.TRANSPARENT);
+//        }
+//        setColor(this,R.color.colorPrimary);
     }
 
     public void onClick(View view) {
