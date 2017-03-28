@@ -33,6 +33,5 @@ public class StartActivity extends TActivity {
             startActivity(new Intent(this,SignInActivity.class));
             finish();
         }
-
     }
 }
