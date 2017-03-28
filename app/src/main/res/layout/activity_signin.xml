@@ -6,68 +6,201 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/ll_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:visibility="gone">
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/signin_head"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="150px"
+            android:background="@color/colorPrimary">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20px"
+                    android:text="同窗"
+                    android:textColor="@color/white"
+                    android:textSize="40px" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="53px"
+            android:background="@mipmap/bg_head" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/signin_info_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="20px"
-        android:layout_marginRight="20px"
+        android:layout_marginLeft="30px"
+        android:layout_marginRight="30px"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/username"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="10px"
-            android:hint="username"
-            android:textColor="@color/black"/>
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/password"
+            <ImageView
+                android:layout_width="70px"
+                android:layout_height="70px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20px"
+                android:src="@mipmap/ic_launcher" />
+
+
+            <com.weiguowang.schoolmate.view.ClearableEditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20px"
+                android:background="@drawable/select_input_bg"
+                android:ellipsize="start"
+                android:gravity="center_horizontal"
+                android:hint="username"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="#ccc" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="10px"
-            android:textColor="@color/black"
-            android:hint="password"
-            android:inputType="textPassword"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="70px"
+                android:layout_height="70px"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20px"
+                android:src="@mipmap/ic_launcher" />
+
+
+            <com.weiguowang.schoolmate.view.ClearableEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20px"
+                android:background="@drawable/select_input_bg"
+                android:gravity="center_horizontal"
+                android:hint="password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="#ccc" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50px">
+
+            <TextView
+                android:id="@+id/forget_pwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15px"
+                android:text="忘记密码"
+                android:onClick="onClick"
+                android:textColor="#aca9a9"
+                android:textSize="26px" />
+        </RelativeLayout>
 
     </LinearLayout>
 
     <Button
         android:id="@+id/signin_btn"
-        android:layout_width="300px"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/signin_info_layout"
         android:layout_centerHorizontal="true"
-        android:background="#f10606"
-        android:text="登录"
+        android:layout_marginLeft="150px"
+        android:layout_marginRight="150px"
+        android:layout_marginTop="50px"
+        android:background="@drawable/select_btn"
         android:onClick="onClick"
-        android:layout_marginTop="30px"
+        android:text="登录"
         android:textColor="@color/white" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20px"
+        android:layout_below="@+id/signin_btn"
+        android:id="@+id/or"
+        android:layout_centerHorizontal="true"
+        android:text="或者"
+        />
+
+    <Button
+        android:id="@+id/qqlogin_btn"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/or"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="300px"
+        android:layout_marginRight="300px"
+        android:layout_marginTop="20px"
+        android:background="@drawable/select_btn"
+        android:onClick="onClick"
+        android:text="QQ登录"
+        android:textColor="@color/white" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/signin_btn"
-        android:layout_marginTop="100px"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="40px">
+        android:paddingBottom="30px">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="还没有账号，" />
+            android:text="还没有账号?" />
 
         <TextView
-            android:onClick="onClick"
-            android:layout_marginLeft="10px"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="立即注册"
             android:id="@+id/register_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            android:onClick="onClick"
+            android:text="马上注册"
             android:textColor="@android:color/holo_red_light" />
     </LinearLayout>
 

@@ -108,7 +108,9 @@ public class MyInfoActivity extends TActivity implements View.OnClickListener {
     private void setUserInfo(MyUser myUser) {
         nickNameTv.setText(myUser.getNickName());
         realNameTv.setText(myUser.getRealName());
-        sexTv.setText(myUser.getSex() ? getString(R.string.female) : getString(R.string.male));
+        if(myUser.getSex()!=null){
+            sexTv.setText(myUser.getSex() ? getString(R.string.female) : getString(R.string.male));
+        }
         jobTv.setText(myUser.getJob());
         mobilePhoneTv.setText(myUser.getMobilePhoneNumber());
         schoolNameTv.setText(myUser.getSchoolName());

@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="body_bg">#fff</color>
+    <color name="body_bg">#e9ebed</color>
     <color name="white">#fff</color>
     <color name="no_color">#00000000</color>
     <color name="black">#000000</color>

@@ -1,21 +1,31 @@
 package com.weiguowang.schoolmate;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.weiguowang.schoolmate.adapter.SelectCallback;
 import com.weiguowang.schoolmate.config.AppConfig;
 import com.weiguowang.schoolmate.entity.MyUser;
 import com.weiguowang.schoolmate.fragment.SelectFragment;
 import com.weiguowang.schoolmate.utils.ImageUtils;
+import com.weiguowang.schoolmate.utils.StatusBarCompat;
 import com.weiguowang.schoolmate.utils.Toasty;
 import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -34,6 +44,12 @@ public abstract class TActivity extends AutoLayoutActivity {
 
 
     protected String TAG = getClass().getSimpleName();
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        StatusBarCompat.compat(this, Color.parseColor("#FE3461"));
+    }
 
     /**
      * toasty message
@@ -133,7 +149,7 @@ public abstract class TActivity extends AutoLayoutActivity {
      */
     protected void downloadHeadImg(final File localFile, final ImageView imageView, MyUser myUser, boolean isForce) {
         if (isForce || !localFile.exists()) {
-            Log.d("info","进到这里");
+            Log.d("info", "进到这里");
             if (!TextUtils.isEmpty(myUser.getHeadUrl())) {
                 BmobFile bmobfile = new BmobFile(AppConfig.HEAD_IMG_NAME, "", myUser.getHeadUrl());
                 if (!localFile.getParentFile().exists()) {
@@ -155,7 +171,7 @@ public abstract class TActivity extends AutoLayoutActivity {
                 });
             }
         } else if (localFile.exists()) {
-            Log.d("info","进到这里localFile");
+            Log.d("info", "进到这里localFile");
             Bitmap bitmap = ImageUtils.decodeSampledBitmapFromFile(localFile.getAbsolutePath(), 0, 0);
             imageView.setImageBitmap(bitmap);
         }
@@ -170,5 +186,7 @@ public abstract class TActivity extends AutoLayoutActivity {
     protected void initHeadImg(final ImageView imageView) {
         initHeadImg(imageView, false);
     }
+
+
 
 }
