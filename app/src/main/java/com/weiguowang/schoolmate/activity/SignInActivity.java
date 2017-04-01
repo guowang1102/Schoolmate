@@ -241,7 +241,7 @@ public class SignInActivity extends TActivity {
                     finish();
                 }else {
                     Log.d(TAG,"loginWithAuth登陆失败:"+e.getMessage());
-                    Toasty.error(SignInActivity.this,"QQ登录失败"+e.getMessage()).show();;
+                    Toasty.error(SignInActivity.this,"QQ登录失败"+e.getMessage()).show();
                 }
             }
 

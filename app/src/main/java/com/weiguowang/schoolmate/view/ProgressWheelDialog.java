@@ -27,6 +27,11 @@ public class ProgressWheelDialog extends ProgressDialog {
 		this.mContext = context;
 	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
+	}
+
 	public static ProgressWheelDialog getInstance(Context context) {
 		if (instance == null) {
 			instance = new ProgressWheelDialog(context);
@@ -81,5 +86,7 @@ public class ProgressWheelDialog extends ProgressDialog {
 			e.printStackTrace();
 		}
 	}
+
+
 
 }

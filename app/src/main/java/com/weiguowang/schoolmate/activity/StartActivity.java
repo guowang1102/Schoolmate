@@ -23,7 +23,6 @@ public class StartActivity extends TActivity {
         setContentView(R.layout.activity_start);
         initData();
     }
-
     private void initData(){
         MyUser userInfo = BmobUser.getCurrentUser(MyUser.class);
         if(userInfo!=null){
