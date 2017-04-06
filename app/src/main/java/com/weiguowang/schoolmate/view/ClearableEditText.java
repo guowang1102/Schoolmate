@@ -17,10 +17,12 @@ import com.weiguowang.schoolmate.R;
 
 
 public class ClearableEditText extends AppCompatEditText {
+
     private static final int DRAWABLE_LEFT = 0;
     private static final int DRAWABLE_TOP = 1;
     private static final int DRAWABLE_RIGHT = 2;
     private static final int DRAWABLE_BOTTOM = 3;
+
     private Drawable mClearDrawable;
 
     public ClearableEditText(Context context) {

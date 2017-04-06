@@ -1,10 +1,14 @@
 package com.weiguowang.schoolmate.utils;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Environment;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
@@ -85,6 +89,58 @@ public class SystemUtils {
 
         public static BuildProperties newInstance() throws IOException {
             return new BuildProperties();
+        }
+
+    }
+
+    public static int getProcessCount(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        return am.getRunningAppProcesses().size();
+    }
+
+    public static long getAvailRam(Context context) {
+        ActivityManager am = (ActivityManager) context
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo outInfo = new ActivityManager.MemoryInfo();
+        am.getMemoryInfo(outInfo);
+        return outInfo.availMem;
+
+    }
+
+    /**
+     * �õ����ڴ�ram
+     */
+
+    public static long getTotalRam(Context context) {
+        // ����Ĵ��룬��4.0�Ժ��֧��
+        // ActivityManager am = (ActivityManager)
+        // context.getSystemService(Context.ACTIVITY_SERVICE);
+        // MemoryInfo outInfo = new MemoryInfo();
+        // am.getMemoryInfo(outInfo);
+        // return outInfo.totalMem;
+        // MemTotal: 516452 kB
+        File file = new File("/proc/meminfo");
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    fis));
+            String line = reader.readLine();
+            StringBuffer buffer = new StringBuffer();
+            for (char c : line.toCharArray()) {
+                if (c >= '0' && c <= '9') {
+                    buffer.append(c);
+                }
+            }
+            fis.close();
+            reader.close();
+            return Integer.valueOf(buffer.toString()) * 1024;
+
+            // �ַ���--�ַ�
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return 0;
         }
 
     }
